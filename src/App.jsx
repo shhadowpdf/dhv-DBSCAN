@@ -179,7 +179,7 @@ const DBSCANViz = () => {
       fontFamily: 'system-ui, -apple-system, sans-serif',
       padding: '2rem'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
           <h1 style={{ 
             fontSize: '2.5rem', 
@@ -270,6 +270,24 @@ const DBSCANViz = () => {
                 </>
               )}
 
+              {hoveredPoint && (
+                <>
+                  {getNeighbors(clusteredPoints, hoveredPoint, eps).map((neighbor) => (
+                    <line
+                      key={`line-${neighbor.id}`}
+                      x1={hoveredPoint.x}
+                      y1={hoveredPoint.y}
+                      x2={neighbor.x}
+                      y2={neighbor.y}
+                      stroke={getPointColor(hoveredPoint)}
+                      strokeWidth="1"
+                      opacity="0.5"
+                      // strokeDasharray="3,3"
+                    />
+                  ))}
+                </>
+              )}
+
               {clusteredPoints.map((point) => (
                 <circle
                   key={point.id}
@@ -294,7 +312,8 @@ const DBSCANViz = () => {
                 background: '#f1f5f9', 
                 borderRadius: '8px',
                 fontSize: '0.875rem',
-                color: '#1e293b'
+                color: '#1e293b',
+                textAlign: 'center'
               }}>
                 <p style={{ fontWeight: '600', margin: '0 0 0.25rem 0' }}>Point #{hoveredPoint.id}</p>
                 <p style={{ margin: '0.25rem 0' }}>Sepal Length: {hoveredPoint.sepalLength.toFixed(2)} cm</p>
@@ -309,7 +328,8 @@ const DBSCANViz = () => {
               display: 'flex', 
               gap: '1rem', 
               marginTop: '1rem',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              justifyContent: 'center'
             }}>
               {Array.from(new Set(clusteredPoints.map(p => p.cluster))).sort().map(c => {
                 const count = clusteredPoints.filter(p => p.cluster === c).length;
@@ -431,21 +451,21 @@ const DBSCANViz = () => {
               boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
             }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                <svg width="35px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fill="#2563eb"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>machine-learning</title> <g id="Layer_2" data-name="Layer 2"> <g id="invisible_box" data-name="invisible box"> <rect width="48" height="48" fill="none"></rect> </g> <g id="Q3_icons" data-name="Q3 icons"> <path d="M31,33a2,2,0,0,0,2-2V28h1.5a1.5,1.5,0,0,0,0-3H33V23h1.5a1.5,1.5,0,0,0,0-3H33V17a2,2,0,0,0-2-2H28V13.5a1.5,1.5,0,0,0-3,0V15H23V13.5a1.5,1.5,0,0,0-3,0V15H17a2,2,0,0,0-2,2v3H13.5a1.5,1.5,0,0,0,0,3H15v2H13.5a1.5,1.5,0,0,0,0,3H15v3a2,2,0,0,0,2,2h3v1.5a1.5,1.5,0,0,0,3,0V33h2v1.5a1.5,1.5,0,0,0,3,0V33ZM18,18H30V30H18Z"></path> <rect x="21" y="21" width="6" height="6"></rect> <g> <path d="M45.6,18.7,41,14.9V7.5a1,1,0,0,0-.6-.9L30.5,2.1h-.4l-.6.2-.5.3v6a1.5,1.5,0,0,0,3,0V7.2l5,2.3v7.4l1.5,1.2L42,20.9v6.2l-3.5,2.8L37,31.1v7.4l-5,2.3V39.5a1.5,1.5,0,0,0-3,0v6l.5.3.6.2h.4l9.9-4.5a1,1,0,0,0,.6-.9V33.1l4.6-3.8a.9.9,0,0,0,.4-.8v-9A.8.8,0,0,0,45.6,18.7Z"></path> <path d="M17.9,2h-.4L7.6,6.6a1,1,0,0,0-.6.9v7.4L2.4,18.7a.8.8,0,0,0-.4.8v9a.9.9,0,0,0,.4.8L7,33.1v7.4a1,1,0,0,0,.6.9l9.9,4.5h.4l.6-.2.5-.3v-6a1.5,1.5,0,0,0-3,0v1.3l-5-2.3V31.1L9.5,29.9,6,27.1V20.9l3.5-2.8L11,16.9V9.5l5-2.3V8.5a1.5,1.5,0,0,0,3,0v-6l-.5-.3Z"></path> </g> </g> </g> </g></svg>
                 <div>
                   <h3 style={{ 
                     fontSize: '1.125rem', 
                     fontWeight: '600', 
                     marginBottom: '0.5rem',
-                    margin: '0 0 0.6rem 0',
+                    margin: '0 0 0.8rem 0',
                     color: '#1e293b'
                   }}>
                     How DBSCAN Works
                   </h3>
                   <ul style={{ 
+                    listStyleType: 'none',
                     fontSize: '0.875rem',
                     color: '#334155',
-                    paddingLeft: '0.01rem',
+                    paddingLeft: '0.7rem',
                     margin: 0
                   }}>
                     <li style={{ marginBottom: '0.5rem' }}><strong>1. Select a point</strong> - Start with an unvisited point</li>
