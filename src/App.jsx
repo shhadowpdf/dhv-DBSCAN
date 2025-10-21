@@ -3,8 +3,8 @@ import React, { useState, useMemo } from 'react';
 // --- Constants ---
 const SVG_WIDTH = 600;
 const SVG_HEIGHT = 400;
-const POINT_RADIUS = 6;
-const HOVER_RADIUS_INCREASE = 3;
+const POINT_RADIUS = 3;
+const HOVER_RADIUS_INCREASE = 2;
 const SELECTED_POINT_RADIUS = POINT_RADIUS + HOVER_RADIUS_INCREASE;
 
 // A more vibrant and modern color palette
@@ -172,12 +172,20 @@ const DBSCANViz = () => {
   const hoveredNeighbors = hoveredPoint ? getNeighbors(clusteredPoints, hoveredPoint, eps).length : 0;
 
   return (
+    <div>
+      <style>{`
+        body {
+          margin: 0;
+          padding: 0;
+          background: #1e293b;
+        }
+      `}</style>
     <div style={{
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
       color: 'white',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      padding: '2rem'
+      padding: '2rem',
     }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div style={{ marginBottom: '2rem', textAlign: 'center' }}>
@@ -505,6 +513,7 @@ const DBSCANViz = () => {
         </div>
       </div>
     </div>
+  </div>
   );
 };
 
