@@ -24,6 +24,10 @@ const NOISE_COLOR = '#888';
 const BG_GRADIENT_START = '#282C34';
 const BG_GRADIENT_END = '#1C1F26';
 
+// Best settings for Iris dataset
+const BEST_EPS = 40;
+const BEST_MIN_PTS = 4;
+
 // Iris dataset
 const irisData = [
   [5.1, 3.5, 1.4, 0.2], [4.9, 3.0, 1.4, 0.2], [4.7, 3.2, 1.3, 0.2], [4.6, 3.1, 1.5, 0.2],
@@ -147,9 +151,13 @@ function dbscan(points, epsilon, minPts) {
 // --- React Component ---
 
 const DBSCANViz = () => {
-  const [eps, setEps] = useState(40);
-  const [minPts, setMinPts] = useState(4);
+  const [eps, setEps] = useState(BEST_EPS);
+  const [minPts, setMinPts] = useState(BEST_MIN_PTS);
   const [hoveredPointId, setHoveredPointId] = useState(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
   const [rawPoints] = useState(() => prepareIrisData());
 
@@ -167,9 +175,36 @@ const DBSCANViz = () => {
   const noisePoints = clusteredPoints.filter(p => p.type === 'noise').length;
   const numClusters = new Set(clusteredPoints.filter(p => p.cluster !== undefined).map(p => p.cluster)).size;
 
-
   const hoveredPoint = hoveredPointId !== null ? clusteredPoints.find(p => p.id === hoveredPointId) : null;
   const hoveredNeighbors = hoveredPoint ? getNeighbors(clusteredPoints, hoveredPoint, eps).length : 0;
+
+  const resetToDefaults = () => {
+    setEps(BEST_EPS);
+    setMinPts(BEST_MIN_PTS);
+    setZoom(1);
+    setPan({ x: 0, y: 0 });
+  };
+
+  const handleWheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    setZoom(prevZoom => Math.min(Math.max(prevZoom * delta, 0.5), 5));
+  };
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
+  };
+
+  const handleMouseMove = (e) => {
+    if (isDragging) {
+      setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
   return (
     <div>
@@ -218,102 +253,157 @@ const DBSCANViz = () => {
             borderRadius: '12px',
             boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
           }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: '600', 
-                marginBottom: '0.5rem',
-                margin: '0 0 0.5rem 0',
-                color: '#1e293b'
-              }}>
-                Cluster Visualization
-              </h2>
-              <p style={{ 
-                fontSize: '0.875rem', 
-                color: '#64748b',
-                margin: 0
-              }}>
-                Sepal Length vs Sepal Width
-              </p>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: '600', 
+                  marginBottom: '0.5rem',
+                  margin: '0 0 0.5rem 0',
+                  color: '#1e293b'
+                }}>
+                  Cluster Visualization
+                </h2>
+                <p style={{ 
+                  fontSize: '0.875rem', 
+                  color: '#64748b',
+                  margin: 0
+                }}>
+                  Sepal Length vs Sepal Width (Scroll to zoom, drag to pan)
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <button
+                  onClick={() => setZoom(z => Math.min(z * 1.2, 5))}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
+                >
+                  Zoom In
+                </button>
+                <button
+                  onClick={() => setZoom(z => Math.max(z * 0.8, 0.5))}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#64748b',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
+                >
+                  Zoom Out
+                </button>
+                <button
+                  onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
+                >
+                  Reset View
+                </button>
+              </div>
             </div>
             
-            <svg
-              width={SVG_WIDTH}
-              height={SVG_HEIGHT}
-              style={{ display: 'block', margin: '0 auto' }}
-            >
-              <defs>
-                <linearGradient id="svgBackgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style={{stopColor: BG_GRADIENT_START, stopOpacity: 1}} />
-                  <stop offset="100%" style={{stopColor: BG_GRADIENT_END, stopOpacity: 1}} />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#svgBackgroundGradient)" />
+            <div style={{ overflow: 'hidden', borderRadius: '8px' }}>
+              <svg
+                width={SVG_WIDTH}
+                height={SVG_HEIGHT}
+                style={{ display: 'block', margin: '0 auto', cursor: isDragging ? 'grabbing' : 'grab' }}
+                onWheel={handleWheel}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+              >
+                <defs>
+                  <linearGradient id="svgBackgroundGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style={{stopColor: BG_GRADIENT_START, stopOpacity: 1}} />
+                    <stop offset="100%" style={{stopColor: BG_GRADIENT_END, stopOpacity: 1}} />
+                  </linearGradient>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                    <feMerge>
+                      <feMergeNode in="coloredBlur"/>
+                      <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                  </filter>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#svgBackgroundGradient)" />
 
-              {hoveredPoint && (
-                <>
-                  <circle
-                    cx={hoveredPoint.x}
-                    cy={hoveredPoint.y}
-                    r={eps}
-                    fill={getPointColor(hoveredPoint)}
-                    opacity="0.1"
-                  />
-                  <circle
-                    cx={hoveredPoint.x}
-                    cy={hoveredPoint.y}
-                    r={eps}
-                    stroke={getPointColor(hoveredPoint)}
-                    strokeDasharray="5,5"
-                    fill="none"
-                    opacity="0.4"
-                  />
-                </>
-              )}
+                <g transform={`translate(${SVG_WIDTH/2 + pan.x}, ${SVG_HEIGHT/2 + pan.y}) scale(${zoom}) translate(${-SVG_WIDTH/2}, ${-SVG_HEIGHT/2})`}>
+                  {hoveredPoint && (
+                    <>
+                      <circle
+                        cx={hoveredPoint.x}
+                        cy={hoveredPoint.y}
+                        r={eps}
+                        fill={getPointColor(hoveredPoint)}
+                        opacity="0.1"
+                      />
+                      <circle
+                        cx={hoveredPoint.x}
+                        cy={hoveredPoint.y}
+                        r={eps}
+                        stroke={getPointColor(hoveredPoint)}
+                        strokeDasharray="5,5"
+                        fill="none"
+                        opacity="0.4"
+                      />
+                    </>
+                  )}
 
-              {hoveredPoint && (
-                <>
-                  {getNeighbors(clusteredPoints, hoveredPoint, eps).map((neighbor) => (
-                    <line
-                      key={`line-${neighbor.id}`}
-                      x1={hoveredPoint.x}
-                      y1={hoveredPoint.y}
-                      x2={neighbor.x}
-                      y2={neighbor.y}
-                      stroke={getPointColor(hoveredPoint)}
-                      strokeWidth="1"
-                      opacity="0.5"
-                      // strokeDasharray="3,3"
+                  {hoveredPoint && (
+                    <>
+                      {getNeighbors(clusteredPoints, hoveredPoint, eps).map((neighbor) => (
+                        <line
+                          key={`line-${neighbor.id}`}
+                          x1={hoveredPoint.x}
+                          y1={hoveredPoint.y}
+                          x2={neighbor.x}
+                          y2={neighbor.y}
+                          stroke={getPointColor(hoveredPoint)}
+                          strokeWidth="1"
+                          opacity="0.5"
+                        />
+                      ))}
+                    </>
+                  )}
+
+                  {clusteredPoints.map((point) => (
+                    <circle
+                      key={point.id}
+                      cx={point.x}
+                      cy={point.y}
+                      r={hoveredPointId === point.id ? SELECTED_POINT_RADIUS : POINT_RADIUS}
+                      fill={getPointColor(point)}
+                      onMouseEnter={() => setHoveredPointId(point.id)}
+                      onMouseLeave={() => setHoveredPointId(null)}
+                      filter=""
+                      stroke={point.type === 'core' ? getPointColor(point) : 'none'}
+                      strokeWidth={point.type === 'core' ? '1.5' : '0'}
+                      style={{ cursor: 'pointer' }}
                     />
                   ))}
-                </>
-              )}
-
-              {clusteredPoints.map((point) => (
-                <circle
-                  key={point.id}
-                  cx={point.x}
-                  cy={point.y}
-                  r={hoveredPointId === point.id ? SELECTED_POINT_RADIUS : POINT_RADIUS}
-                  fill={getPointColor(point)}
-                  onMouseEnter={() => setHoveredPointId(point.id)}
-                  onMouseLeave={() => setHoveredPointId(null)}
-                  filter=""
-                  stroke={point.type === 'core' ? getPointColor(point) : 'none'}
-                  strokeWidth={point.type === 'core' ? '1.5' : '0'}
-                  style={{ cursor: 'pointer' }}
-                />
-              ))}
-            </svg>
-
-
+                </g>
+              </svg>
+            </div>
 
             <div style={{ 
               display: 'flex', 
@@ -358,7 +448,7 @@ const DBSCANViz = () => {
               )}
             </div>
             {hoveredPoint && (
-              <div className = "hovered" style={{ 
+              <div style={{ 
                 marginTop: '1rem', 
                 padding: '0.75rem', 
                 background: '#f1f5f9', 
@@ -423,7 +513,7 @@ const DBSCANViz = () => {
                 </p>
               </div>
 
-              <div>
+              <div style={{ marginBottom: '1rem' }}>
                 <label style={{ 
                   display: 'block', 
                   fontSize: '0.875rem',
@@ -451,6 +541,26 @@ const DBSCANViz = () => {
                   Minimum points needed to form a dense region
                 </p>
               </div>
+
+              <button
+                onClick={resetToDefaults}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  background: '#f59e0b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'background 0.2s'
+                }}
+                onMouseOver={(e) => e.target.style.background = '#d97706'}
+                onMouseOut={(e) => e.target.style.background = '#f59e0b'}
+              >
+                🔄 Reset to Best Settings
+              </button>
             </div>
 
             <div style={{ 
