@@ -313,24 +313,7 @@ const DBSCANViz = () => {
               ))}
             </svg>
 
-            {hoveredPoint && (
-              <div style={{ 
-                marginTop: '1rem', 
-                padding: '0.75rem', 
-                background: '#f1f5f9', 
-                borderRadius: '8px',
-                fontSize: '0.875rem',
-                color: '#1e293b',
-                textAlign: 'center'
-              }}>
-                <p style={{ fontWeight: '600', margin: '0 0 0.25rem 0' }}>Point #{hoveredPoint.id}</p>
-                <p style={{ margin: '0.25rem 0' }}>Sepal Length: {hoveredPoint.sepalLength.toFixed(2)} cm</p>
-                <p style={{ margin: '0.25rem 0' }}>Sepal Width: {hoveredPoint.sepalWidth.toFixed(2)} cm</p>
-                <p style={{ margin: '0.25rem 0' }}>Type: <span style={{ fontWeight: '600' }}>{hoveredPoint.type.toUpperCase()}</span></p>
-                {hoveredPoint.cluster !== undefined && <p style={{ margin: '0.25rem 0' }}>Cluster: {hoveredPoint.cluster}</p>}
-                <p style={{ margin: '0.25rem 0' }}>Neighbors: {hoveredNeighbors} (MinPts: {minPts})</p>
-              </div>
-            )}
+
 
             <div style={{ 
               display: 'flex', 
@@ -374,6 +357,24 @@ const DBSCANViz = () => {
                 </div>
               )}
             </div>
+            {hoveredPoint && (
+              <div className = "hovered" style={{ 
+                marginTop: '1rem', 
+                padding: '0.75rem', 
+                background: '#f1f5f9', 
+                borderRadius: '8px',
+                fontSize: '0.875rem',
+                color: '#1e293b',
+                textAlign: 'center'
+              }}>
+                <p style={{ fontWeight: '600', margin: '0 0 0.25rem 0' }}>Point #{hoveredPoint.id}</p>
+                <p style={{ margin: '0.25rem 0' }}>Sepal Length: {hoveredPoint.sepalLength.toFixed(2)} cm</p>
+                <p style={{ margin: '0.25rem 0' }}>Sepal Width: {hoveredPoint.sepalWidth.toFixed(2)} cm</p>
+                <p style={{ margin: '0.25rem 0' }}>Type: <span style={{ fontWeight: '600' }}>{hoveredPoint.type.toUpperCase()}</span></p>
+                {hoveredPoint.cluster !== undefined && <p style={{ margin: '0.25rem 0' }}>Cluster: {hoveredPoint.cluster}</p>}
+                <p style={{ margin: '0.25rem 0' }}>Neighbors: {hoveredNeighbors} (MinPts: {minPts})</p>
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
