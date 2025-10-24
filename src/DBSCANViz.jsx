@@ -678,6 +678,7 @@ const DBSCANViz = ({epsilon, minPt}) => {
     </div>
   );
 };
+// eslint-disable-next-line react-refresh/only-export-components
 export const realEstateData = [
   // --- Cluster 1: Budget Apartments (₹25-45 lakhs, 450-700 sq ft)
   [28, 480, 1, 22], [30, 520, 1, 20], [32, 550, 1, 18], [35, 600, 2, 19],
