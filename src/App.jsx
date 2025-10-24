@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import DBSCANViz, { realEstateData } from "./DBSCANViz.jsx";
 import DBSCANExplain from "./DBSCANExplain.jsx";
@@ -18,7 +19,7 @@ export default function App() {
       {/* animated explanation */}
       {showExplain && (
         <div style={{ marginTop: "40px" }}>
-          <DBSCANExplain epsilon={22} minPts={5} />
+          <DBSCANExplain/>
         </div>
       )}
     </div>

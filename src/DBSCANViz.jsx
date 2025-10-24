@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useMemo, useRef } from 'react';
 
 // --- Constants ---
@@ -578,22 +579,6 @@ const DBSCANViz = ({epsilon, minPt}) => {
               </div>
 
               {/* Explainer */}
-              <div className="card">
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                  <div>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 0.8rem 0', color: '#1e293b' }}>
-                      How DBSCAN Works
-                    </h3>
-                    <ul style={{ listStyleType: 'none', fontSize: '0.875rem', color: '#334155', paddingLeft: '0.7rem', margin: 0 }}>
-                      <li style={{ marginBottom: '0.5rem' }}><strong>1. Select a point</strong> — Start with an unvisited point</li>
-                      <li style={{ marginBottom: '0.5rem' }}><strong>2. Find neighbors</strong> — Get all points within ε distance</li>
-                      <li style={{ marginBottom: '0.5rem' }}><strong>3. Core point?</strong> — If neighbors ≥ minPts, it's a core point</li>
-                      <li style={{ marginBottom: '0.5rem' }}><strong>4. Expand cluster</strong> — Add neighbors and their neighbors recursively</li>
-                      <li><strong>5. Mark noise</strong> — Points with few neighbors are noise</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
 
               {/* Stats */}
               <div className="card">
@@ -606,69 +591,6 @@ const DBSCANViz = ({epsilon, minPt}) => {
                   <p style={{ margin: '0.5rem 0' }}>Core Points: <strong>{corePoints}</strong></p>
                   <p style={{ margin: '0.5rem 0' }}>Border Points: <strong>{borderPoints}</strong></p>
                   <p style={{ margin: '0.5rem 0' }}>Noise Points: <strong>{noisePoints}</strong></p>
-                </div>
-              </div>
-                            {/* Upload Card */}
-              <div className="card">
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, margin: '0 0 1rem 0', color: '#1e293b' }}>
-                  Upload Dataset
-                </h3>
-
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept=".csv,.json,text/csv,application/json"
-                    onChange={handleFileSelect}
-                    style={{ display: 'none' }}
-                  />
-                  <button className="btn btn-primary" onClick={() => fileInputRef.current?.click()}>📤 Choose CSV/JSON</button>
-                  <button className="btn btn-muted" onClick={clearUpload} disabled={!uploadedFileName}>
-                    Reset to Sample
-                  </button>
-                </div>
-
-                <div style={{ marginTop: '0.75rem', fontSize: '0.875rem', color: '#1e293b' }}>
-                  <p style={{ margin: '0.25rem 0' }}>
-                    {uploadedFileName ? <><strong>File:</strong> {uploadedFileName}</> : 'Using built-in sample data'}
-                  </p>
-                  <p style={{ margin: '0.25rem 0' }}>
-                    <strong>Rows:</strong> original {originalCount}{useReduction ? ` → reduced ${reducedCount}` : ''}
-                  </p>
-                  {parseError && (
-                    <p style={{ margin: '0.25rem 0', color: '#b91c1c' }}>
-                      ⚠️ {parseError}
-                    </p>
-                  )}
-                  <p className="muted" style={{ margin: '0.25rem 0' }}>
-                    CSV headers auto-map (price, area, bedrooms, age). JSON can be array of objects or 4-tuples.
-                  </p>
-                </div>
-
-                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
-                  <label className="label">Reduction</label>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <input type="checkbox" checked={useReduction} onChange={(e) => setUseReduction(e.target.checked)} />
-                    <span style={{ color: '#1e293b', fontSize: '0.9rem' }}>Enable grid-based thinning for smoother visualization</span>
-                  </div>
-                  <div style={{ opacity: useReduction ? 1 : 0.5 }}>
-                    <label className="label">
-                      Target Max Points: <span style={{ color: '#3b82f6' }}>{maxPoints}</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="50"
-                      max="5000"
-                      step="50"
-                      value={maxPoints}
-                      onChange={(e) => setMaxPoints(parseInt(e.target.value))}
-                      style={{ width: '100%' }}
-                      disabled={!useReduction}
-                    />
-                    <p className="muted" style={{ marginTop: '0.25rem' }}>
-                      Uses a 2D grid to keep the distribution (not random sampling).
-                    </p>
-                  </div>
                 </div>
               </div>
             </div>
