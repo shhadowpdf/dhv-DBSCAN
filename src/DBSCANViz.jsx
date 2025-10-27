@@ -430,11 +430,55 @@ const DBSCANViz = ({epsilon, minPt}) => {
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                  <button className="btn btn-primary" onClick={() => setZoom(z => Math.min(z * 1.2, 5))}>Zoom In</button>
-                  <button className="btn btn-muted" onClick={() => setZoom(z => Math.max(z * 0.8, 0.5))}>Zoom Out</button>
-                  <button className="btn btn-success" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}>Reset View</button>
-                </div>
+                <button
+                  onClick={() => setZoom(z => Math.min(z * 1.2, 5))}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
+                >
+                  Zoom In
+                </button>
+                <button
+                  onClick={() => setZoom(z => Math.max(z * 0.8, 0.5))}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#64748b',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500'
+                  }}
+                >
+                  Zoom Out
+                </button>
+                <button
+                  onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }); }}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '500',
+                    position: 'relative',
+                    bottom: '4.5px'
+                  }}
+                >
+                  Reset View
+                </button>
               </div>
+            </div>
 
               <div style={{ overflow: 'hidden', borderRadius: '8px' }}>
                 <svg
@@ -539,7 +583,7 @@ const DBSCANViz = ({epsilon, minPt}) => {
                     type="range"
                     min="10"
                     max="150"
-                    step="5"
+                    step="1"
                     value={eps}
                     onChange={(e) => setEps(parseFloat(e.target.value))}
                     style={{ width: '100%' }}
@@ -568,15 +612,59 @@ const DBSCANViz = ({epsilon, minPt}) => {
                 </div>
 
                 <button
-                  className="btn btn-warn"
-                  onClick={resetToDefaults}
-                  onMouseOver={(e) => e.currentTarget.style.background = '#d97706'}
-                  onMouseOut={(e) => e.currentTarget.style.background = '#f59e0b'}
-                  style={{ width: '100%' }}
-                >
-                  🔄 Reset to Best Settings
-                </button>
+                onClick={resetToDefaults}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  background: '#f59e0b',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  transition: 'background 0.2s'
+                }}
+                onMouseOver={(e) => e.target.style.background = '#d97706'}
+                onMouseOut={(e) => e.target.style.background = '#f59e0b'}
+              >
+                🔄 Reset to Best Settings
+              </button>
               </div>
+              
+              <div style={{ 
+              background: '#ffffffff',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                <div>
+                  <h3 style={{ 
+                    fontSize: '1.125rem', 
+                    fontWeight: '600', 
+                    marginBottom: '0.5rem',
+                    margin: '0 0 0.8rem 0',
+                    color: '#1e293b'
+                  }}>
+                    How DBSCAN Works
+                  </h3>
+                  <ul style={{ 
+                    listStyleType: 'none',
+                    fontSize: '0.875rem',
+                    color: '#334155',
+                    paddingLeft: '0.7rem',
+                    margin: 0
+                  }}>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>1. Select a point</strong> - Start with an unvisited point</li>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>2. Find neighbors</strong> - Get all points within ε distance</li>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>3. Core point?</strong> - If neighbors ≥ minPts, it's a core point</li>
+                    <li style={{ marginBottom: '0.5rem' }}><strong>4. Expand cluster</strong> - Add neighbors and their neighbors recursively</li>
+                    <li><strong>5. Mark noise</strong> - Points with few neighbors are noise</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
               {/* Explainer */}
 
@@ -586,7 +674,7 @@ const DBSCANViz = ({epsilon, minPt}) => {
                   Statistics
                 </h3>
                 <div style={{ fontSize: '0.875rem', color: '#1e293b' }}>
-                  <p style={{ margin: '0.5rem 0' }}>Total Rows (current): <strong>{reducedCount}</strong> {useReduction && <span className="muted"> (from {originalCount})</span>}</p>
+                  <p style={{ margin: '0.5rem 0' }}>Total Rows: <strong>{reducedCount}</strong></p>
                   <p style={{ margin: '0.5rem 0' }}>Clusters Found: <strong>{numClusters}</strong></p>
                   <p style={{ margin: '0.5rem 0' }}>Core Points: <strong>{corePoints}</strong></p>
                   <p style={{ margin: '0.5rem 0' }}>Border Points: <strong>{borderPoints}</strong></p>

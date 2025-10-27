@@ -397,44 +397,6 @@ function DBSCANExplain() {
           )}
         </div>
       </div>
-
-      {/* Explanation Panel */}
-      {/* How it Works */}
-      <div className="how-it-works">
-        <h2>📚 How DBSCAN Works (Simple Explanation)</h2>
-        <div className="steps-grid">
-          <div className="step-card">
-            <h3>1️⃣ Find Neighbors</h3>
-            <p>For each flower, count how many other flowers are within epsilon distance. These are its neighbors!</p>
-          </div>
-          <div className="step-card">
-            <h3>2️⃣ Build Clusters</h3>
-            <p>Start from flowers with enough neighbors (core points) and connect all nearby flowers to form clusters!</p>
-          </div>
-          <div className="step-card">
-            <h3>3️⃣ Expand Clusters</h3>
-            <p>Keep adding connected neighbors recursively until no more flowers can be added to the cluster!</p>
-          </div>
-          <div className="step-card">
-            <h3>4️⃣ Find Outliers</h3>
-            <p>Flowers that don't fit any cluster are marked as "noise" - they're unique outliers!</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="about-iris">
-        <h2>🌺 About the Iris Dataset</h2>
-        <p>
-          The Iris dataset contains measurements of 150 iris flowers from three species: <strong>Setosa</strong>, 
-          <strong> Versicolor</strong>, and <strong>Virginica</strong>. Each flower has four features measured in centimeters: 
-          sepal length, sepal width, petal length, and petal width. This visualization uses <strong>petal measurements</strong> 
-          (length and width) to create a 2D plot where DBSCAN can discover natural groupings based on flower similarity.
-        </p>
-        <p>
-          By comparing DBSCAN clusters with true species labels, you can see how well density-based clustering identifies 
-          natural patterns in the data without being told the actual species names!
-        </p>
-      </div>
     </div>
   );
 }

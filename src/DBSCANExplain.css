@@ -183,8 +183,8 @@ canvas {
 
 .point-info {
   position: absolute;
-  top: 30px;
-  right: 30px;
+  bottom: 365px;
+  right: 145px;
   background: rgba(255, 255, 255, 0.95);
   border: 2px solid #3b82f6;
   border-radius: 8px;
