@@ -413,7 +413,7 @@ const DBSCANViz = ({epsilon, minPt}) => {
               DBSCAN Clustering Algorithm
             </h1>
             <p style={{ color: '#94a3b8', margin: 0 }}>
-              Interactive visualization with upload & smart reduction
+              Interactive visualization 
             </p>
           </div>
 
