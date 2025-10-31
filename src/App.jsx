@@ -1,20 +1,37 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
-import { ChevronRight, ChevronLeft, Play, Info, Users, TrendingUp, FileText, Home } from "lucide-react";
+import {
+  ChevronRight,
+  ChevronLeft,
+  Play,
+  Info,
+  Users,
+  TrendingUp,
+  FileText,
+  Home,
+} from "lucide-react";
 
 /* ---------- shape generators ---------- */
 function makeCircle(cx, cy, r, n, prefix = "") {
   return Array.from({ length: n }, (_, i) => {
     const a = Math.random() * Math.PI * 2;
     const rr = r * (0.7 + Math.random() * 0.4);
-    return { id: `${prefix}${i}`, x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr };
+    return {
+      id: `${prefix}${i}`,
+      x: cx + Math.cos(a) * rr,
+      y: cy + Math.sin(a) * rr,
+    };
   });
 }
 function makeEllipse(cx, cy, rx, ry, n, prefix = "") {
   return Array.from({ length: n }, (_, i) => {
     const a = Math.random() * Math.PI * 2;
     const rr = 0.8 + Math.random() * 0.4;
-    return { id: `${prefix}${i}`, x: cx + Math.cos(a) * rx * rr, y: cy + Math.sin(a) * ry * rr };
+    return {
+      id: `${prefix}${i}`,
+      x: cx + Math.cos(a) * rx * rr,
+      y: cy + Math.sin(a) * ry * rr,
+    };
   });
 }
 function makeLine(x1, y1, x2, y2, n, jitter = 2, prefix = "") {
@@ -23,7 +40,7 @@ function makeLine(x1, y1, x2, y2, n, jitter = 2, prefix = "") {
     return {
       id: `${prefix}${i}`,
       x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * jitter,
-      y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * jitter
+      y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * jitter,
     };
   });
 }
@@ -35,7 +52,8 @@ function makeCrescent(cx, cy, r1, r2, n, prefix = "") {
     const x = cx + Math.cos(a) * rr;
     const y = cy + Math.sin(a) * rr;
     // remove some interior points to create a crescent-like shape
-    if ((x - (cx + r1 * 0.35)) ** 2 + (y - cy) ** 2 > (r1 * 0.5) ** 2) out.push({ id: `${prefix}${i}`, x, y });
+    if ((x - (cx + r1 * 0.35)) ** 2 + (y - cy) ** 2 > (r1 * 0.5) ** 2)
+      out.push({ id: `${prefix}${i}`, x, y });
   }
   return out;
 }
@@ -70,7 +88,8 @@ function makeDataset(kind) {
 function dbscan(points, eps, minPts) {
   const n = points.length;
   const labels = new Array(n).fill(null);
-  const dist = (i, j) => Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
+  const dist = (i, j) =>
+    Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
 
   function region(i) {
     const out = [];
@@ -103,7 +122,6 @@ function dbscan(points, eps, minPts) {
   return labels;
 }
 
-
 /* ---------- MAIN DASHBOARD COMPONENT ---------- */
 export default function DBSCANProfessionalDashboard() {
   const [currentPage, setCurrentPage] = useState(0);
@@ -118,15 +136,43 @@ export default function DBSCANProfessionalDashboard() {
     { id: "interactive", title: "Interactive Tutorial", icon: Play },
     { id: "visualize", title: "Live Clustering", icon: TrendingUp },
     { id: "compare", title: "Compare Scenarios", icon: Users },
-    { id: "insights", title: "Professional Insights", icon: FileText }
+    { id: "insights", title: "Professional Insights", icon: FileText },
   ];
 
   return (
-    <div style={{ fontFamily: "Inter, -apple-system, sans-serif", background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", minHeight: "100vh", padding: "20px" }}>
-      <div style={{ maxWidth: 1400, margin: "0 auto", background: "white", borderRadius: 20, boxShadow: "0 20px 60px rgba(0,0,0,0.3)", overflow: "hidden" }}>
-        
-        <header style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", padding: "30px 40px", color: "white" }}>
-          <h1 style={{ margin: 0, fontSize: 32, fontWeight: 900, letterSpacing: "-0.5px" }}>
+    <div
+      style={{
+        fontFamily: "Inter, -apple-system, sans-serif",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: 1400,
+          margin: "0 auto",
+          background: "white",
+          borderRadius: 20,
+          boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
+          overflow: "hidden",
+        }}
+      >
+        <header
+          style={{
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            padding: "30px 40px",
+            color: "white",
+          }}
+        >
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 32,
+              fontWeight: 900,
+              letterSpacing: "-0.5px",
+            }}
+          >
             Pattern Discovery for Professionals
           </h1>
           <p style={{ margin: "8px 0 0 0", fontSize: 16, opacity: 0.9 }}>
@@ -134,7 +180,14 @@ export default function DBSCANProfessionalDashboard() {
           </p>
         </header>
 
-        <nav style={{ display: "flex", borderBottom: "2px solid #e2e8f0", background: "#f8fafc", overflowX: "auto" }}>
+        <nav
+          style={{
+            display: "flex",
+            borderBottom: "2px solid #e2e8f0",
+            background: "#f8fafc",
+            overflowX: "auto",
+          }}
+        >
           {pages.map((page, idx) => {
             const Icon = page.icon;
             return (
@@ -146,7 +199,10 @@ export default function DBSCANProfessionalDashboard() {
                   padding: "16px 20px",
                   border: "none",
                   background: currentPage === idx ? "white" : "transparent",
-                  borderBottom: currentPage === idx ? "3px solid #667eea" : "3px solid transparent",
+                  borderBottom:
+                    currentPage === idx
+                      ? "3px solid #667eea"
+                      : "3px solid transparent",
                   color: currentPage === idx ? "#667eea" : "#64748b",
                   cursor: "pointer",
                   fontWeight: currentPage === idx ? 700 : 500,
@@ -155,7 +211,7 @@ export default function DBSCANProfessionalDashboard() {
                   justifyContent: "center",
                   gap: 8,
                   fontSize: 14,
-                  transition: "all 0.2s"
+                  transition: "all 0.2s",
                 }}
               >
                 <Icon size={18} />
@@ -166,15 +222,43 @@ export default function DBSCANProfessionalDashboard() {
         </nav>
 
         <main style={{ padding: 40, minHeight: 500 }}>
-          {currentPage === 0 && <WelcomePage profession={profession} setProfession={setProfession} setCurrentPage={setCurrentPage} />}
+          {currentPage === 0 && (
+            <WelcomePage
+              profession={profession}
+              setProfession={setProfession}
+              setCurrentPage={setCurrentPage}
+            />
+          )}
           {currentPage === 1 && <LearnLanguagePage profession={profession} />}
-          {currentPage === 2 && <InteractiveTutorialPage profession={profession} tutorialStep={tutorialStep} setTutorialStep={setTutorialStep} />}
-          {currentPage === 3 && <LiveClusteringPage profession={profession} eps={eps} setEps={setEps} minPts={minPts} setMinPts={setMinPts} />}
+          {currentPage === 2 && (
+            <InteractiveTutorialPage
+              profession={profession}
+              tutorialStep={tutorialStep}
+              setTutorialStep={setTutorialStep}
+            />
+          )}
+          {currentPage === 3 && (
+            <LiveClusteringPage
+              profession={profession}
+              eps={eps}
+              setEps={setEps}
+              minPts={minPts}
+              setMinPts={setMinPts}
+            />
+          )}
           {currentPage === 4 && <CompareScenarios profession={profession} />}
           {currentPage === 5 && <InsightsPage profession={profession} />}
         </main>
 
-        <footer style={{ padding: "20px 40px", background: "#f8fafc", borderTop: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between" }}>
+        <footer
+          style={{
+            padding: "20px 40px",
+            background: "#f8fafc",
+            borderTop: "1px solid #e2e8f0",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <button
             onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
             disabled={currentPage === 0}
@@ -188,26 +272,30 @@ export default function DBSCANProfessionalDashboard() {
               fontWeight: 600,
               display: "flex",
               alignItems: "center",
-              gap: 8
+              gap: 8,
             }}
           >
             <ChevronLeft size={18} />
             Previous
           </button>
           <button
-            onClick={() => setCurrentPage(Math.min(pages.length - 1, currentPage + 1))}
+            onClick={() =>
+              setCurrentPage(Math.min(pages.length - 1, currentPage + 1))
+            }
             disabled={currentPage === pages.length - 1}
             style={{
               padding: "10px 20px",
               border: "none",
-              background: currentPage === pages.length - 1 ? "#e2e8f0" : "#667eea",
+              background:
+                currentPage === pages.length - 1 ? "#e2e8f0" : "#667eea",
               color: currentPage === pages.length - 1 ? "#94a3b8" : "white",
               borderRadius: 8,
-              cursor: currentPage === pages.length - 1 ? "not-allowed" : "pointer",
+              cursor:
+                currentPage === pages.length - 1 ? "not-allowed" : "pointer",
               fontWeight: 600,
               display: "flex",
               alignItems: "center",
-              gap: 8
+              gap: 8,
             }}
           >
             Next
@@ -223,39 +311,84 @@ export default function DBSCANProfessionalDashboard() {
 
 function WelcomePage({ profession, setProfession, setCurrentPage }) {
   const professions = [
-    { name: "Real Estate", icon: "🏠", desc: "Group similar properties, identify unique listings" },
+    {
+      name: "Real Estate",
+      icon: "🏠",
+      desc: "Group similar properties, identify unique listings",
+    },
     { name: "Law", icon: "⚖️", desc: "Cluster similar cases, find precedents" },
-    { name: "Journalism", icon: "✍️", desc: "Organize stories by topic, spot trending themes" }
+    {
+      name: "Journalism",
+      icon: "✍️",
+      desc: "Organize stories by topic, spot trending themes",
+    },
   ];
 
   return (
     <div style={{ textAlign: "center", maxWidth: 900, margin: "0 auto" }}>
-      <h2 style={{ fontSize: 36, color: "#1e293b", marginBottom: 16 }}>Welcome! Let's speak your language.</h2>
-      <p style={{ fontSize: 18, color: "#475569", marginBottom: 40, lineHeight: 1.6 }}>
-        You work with data every day—properties, cases, articles. What if you could automatically find patterns, 
-        group similar items, and spot the outliers? That's what clustering does, and we'll show you how 
-        <strong style={{ color: "#667eea" }}> without any technical jargon</strong>.
+      <h2 style={{ fontSize: 36, color: "#1e293b", marginBottom: 16 }}>
+        Welcome! Let's speak your language.
+      </h2>
+      <p
+        style={{
+          fontSize: 18,
+          color: "#475569",
+          marginBottom: 40,
+          lineHeight: 1.6,
+        }}
+      >
+        You work with data every day—properties, cases, articles. What if you
+        could automatically find patterns, group similar items, and spot the
+        outliers? That's what clustering does, and we'll show you how
+        <strong style={{ color: "#667eea" }}>
+          {" "}
+          without any technical jargon
+        </strong>
+        .
       </p>
 
       <div style={{ marginBottom: 40 }}>
-        <h3 style={{ fontSize: 24, color: "#1e293b", marginBottom: 24 }}>Choose your profession:</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: 20 }}>
-          {professions.map(p => (
+        <h3 style={{ fontSize: 24, color: "#1e293b", marginBottom: 24 }}>
+          Choose your profession:
+        </h3>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: 20,
+          }}
+        >
+          {professions.map((p) => (
             <button
               key={p.name}
               onClick={() => setProfession(p.name)}
               style={{
                 padding: 30,
-                border: profession === p.name ? "3px solid #667eea" : "2px solid #e2e8f0",
+                border:
+                  profession === p.name
+                    ? "3px solid #667eea"
+                    : "2px solid #e2e8f0",
                 background: profession === p.name ? "#f0f4ff" : "white",
                 borderRadius: 16,
                 cursor: "pointer",
                 transition: "all 0.3s",
-                boxShadow: profession === p.name ? "0 8px 20px rgba(102,126,234,0.2)" : "0 2px 8px rgba(0,0,0,0.05)"
+                boxShadow:
+                  profession === p.name
+                    ? "0 8px 20px rgba(102,126,234,0.2)"
+                    : "0 2px 8px rgba(0,0,0,0.05)",
               }}
             >
               <div style={{ fontSize: 48, marginBottom: 12 }}>{p.icon}</div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", marginBottom: 8 }}>{p.name}</div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#1e293b",
+                  marginBottom: 8,
+                }}
+              >
+                {p.name}
+              </div>
               <div style={{ fontSize: 14, color: "#64748b" }}>{p.desc}</div>
             </button>
           ))}
@@ -276,7 +409,7 @@ function WelcomePage({ profession, setProfession, setCurrentPage }) {
           boxShadow: "0 8px 20px rgba(102,126,234,0.3)",
           display: "inline-flex",
           alignItems: "center",
-          gap: 10
+          gap: 10,
         }}
       >
         Get Started
@@ -289,46 +422,155 @@ function WelcomePage({ profession, setProfession, setCurrentPage }) {
 function LearnLanguagePage({ profession }) {
   const translations = {
     "Real Estate": [
-      { your: "Neighborhood", tech: "Cluster", explanation: "A group of similar properties close together in price and features" },
-      { your: "Walking Distance", tech: "Epsilon (ε)", explanation: "How close properties need to be to consider them part of the same neighborhood" },
-      { your: "Minimum Community Size", tech: "MinPts", explanation: "How many similar properties you need before calling it a neighborhood" },
-      { your: "Unique Listing", tech: "Outlier", explanation: "A property that doesn't fit any neighborhood—too different or isolated" },
-      { your: "Property Features", tech: "Data Points", explanation: "Size, price, location—the characteristics you compare" },
-      { your: "Market Segment", tech: "Dense Region", explanation: "An area where many similar properties cluster together" }
+      {
+        your: "Neighborhood",
+        tech: "Cluster",
+        explanation:
+          "A natural group of properties that share similar price ranges and features — forming a clear community in the housing market.",
+      },
+      {
+        your: "Walking Distance",
+        tech: "Epsilon (ε)",
+        explanation:
+          "The limit for how far apart two properties can be in price or size to still be considered 'close neighbors'.",
+      },
+      {
+        your: "Minimum Community Size",
+        tech: "MinPts",
+        explanation:
+          "The smallest number of nearby properties required to recognize an area as a valid neighborhood.",
+      },
+      {
+        your: "Unique Listing",
+        tech: "Outlier",
+        explanation:
+          "A one-of-a-kind property — like a luxury penthouse or distressed home — that doesn’t belong to any neighborhood.",
+      },
+      {
+        your: "Property Features",
+        tech: "Data Points",
+        explanation:
+          "Each property’s characteristics — such as size, price, and location — used to determine similarities and differences.",
+      },
+      {
+        your: "Market Segment",
+        tech: "Dense Region",
+        explanation:
+          "A concentrated zone where many similar properties exist — showing strong demand or common pricing trends.",
+      },
     ],
-    "Law": [
-      { your: "Case Category", tech: "Cluster", explanation: "A group of similar cases (theft, fraud, assault, etc.)" },
-      { your: "Similar Circumstances", tech: "Epsilon (ε)", explanation: "How similar cases must be to group them together" },
-      { your: "Minimum Precedent Count", tech: "MinPts", explanation: "How many similar cases needed to establish a pattern" },
-      { your: "Landmark Case", tech: "Outlier", explanation: "A unique case that doesn't fit existing categories" },
-      { your: "Case Characteristics", tech: "Data Points", explanation: "Duration, complexity, severity—the factors you compare" },
-      { your: "Common Case Type", tech: "Dense Region", explanation: "Areas where many similar cases cluster" }
+
+    Law: [
+      {
+        your: "Case Category",
+        tech: "Cluster",
+        explanation:
+          "A group of legal cases that share similar facts, charges, or outcomes — like fraud, theft, or contract disputes.",
+      },
+      {
+        your: "Similar Circumstances",
+        tech: "Epsilon (ε)",
+        explanation:
+          "How closely two cases must match in details or context to be treated as part of the same legal pattern.",
+      },
+      {
+        your: "Minimum Precedent Count",
+        tech: "MinPts",
+        explanation:
+          "The minimum number of similar cases required before a legal pattern or precedent can be established.",
+      },
+      {
+        your: "Landmark Case",
+        tech: "Outlier",
+        explanation:
+          "A rare or exceptional case that stands apart — often setting new legal standards or challenging existing ones.",
+      },
+      {
+        your: "Case Characteristics",
+        tech: "Data Points",
+        explanation:
+          "The measurable aspects of each case — like duration, severity, evidence type, or judgment complexity.",
+      },
+      {
+        your: "Common Case Type",
+        tech: "Dense Region",
+        explanation:
+          "An area in the legal landscape where many similar cases gather — showing recurring legal trends or issues.",
+      },
     ],
-    "Journalism": [
-      { your: "Story Beat", tech: "Cluster", explanation: "A group of articles covering the same topic or theme" },
-      { your: "Topic Similarity", tech: "Epsilon (ε)", explanation: "How similar articles must be to group them in the same beat" },
-      { your: "Minimum Coverage", tech: "MinPts", explanation: "How many articles needed to call something a recurring beat" },
-      { your: "Breaking Investigation", tech: "Outlier", explanation: "A unique story that stands alone, not part of regular coverage" },
-      { your: "Article Metrics", tech: "Data Points", explanation: "Length, engagement, topic—the characteristics you measure" },
-      { your: "Trending Topic", tech: "Dense Region", explanation: "Where many similar stories cluster together" }
-    ]
+
+Journalism: [
+  {
+    your: "Story Beat",
+    tech: "Cluster",
+    explanation:
+      "A collection of related news stories that revolve around the same theme, issue, or ongoing event — like climate change or election coverage.",
+  },
+  {
+    your: "Topic Similarity",
+    tech: "Epsilon (ε)",
+    explanation:
+      "The degree of similarity in subject, tone, or keywords that determines whether two stories belong to the same beat.",
+  },
+  {
+    your: "Minimum Coverage",
+    tech: "MinPts",
+    explanation:
+      "The smallest number of related articles required before a topic is recognized as a consistent news beat.",
+  },
+  {
+    your: "Breaking Investigation",
+    tech: "Outlier",
+    explanation:
+      "A standout, one-of-a-kind story — an exclusive scoop or groundbreaking report that doesn’t align with regular coverage.",
+  },
+  {
+    your: "Article Metrics",
+    tech: "Data Points",
+    explanation:
+      "Quantifiable aspects of each story — such as length, audience reach, tone, and topic — used to measure similarity and impact.",
+  },
+  {
+    your: "Trending Topic",
+    tech: "Dense Region",
+    explanation:
+      "A hotspot of media activity where many stories focus on the same subject — signaling a rising trend or public interest.",
+  },
+],
+
   };
 
   const current = translations[profession];
 
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-      <h2 style={{ fontSize: 32, color: "#1e293b", marginBottom: 16, textAlign: "center" }}>
+      <h2
+        style={{
+          fontSize: 32,
+          color: "#1e293b",
+          marginBottom: 16,
+          textAlign: "center",
+        }}
+      >
         Your Language ↔ Tech Language
       </h2>
-      <p style={{ fontSize: 16, color: "#475569", marginBottom: 40, textAlign: "center", lineHeight: 1.6 }}>
-        Here's how the words you use every day connect to data clustering concepts. 
+      <p
+        style={{
+          fontSize: 16,
+          color: "#475569",
+          marginBottom: 40,
+          textAlign: "center",
+          lineHeight: 1.6,
+        }}
+      >
+        Here's how the words you use every day connect to data clustering
+        concepts.
         <strong> No formulas, just plain translations</strong>.
       </p>
 
       <div style={{ display: "grid", gap: 20 }}>
         {current.map((item, idx) => (
-          <div 
+          <div
             key={idx}
             style={{
               background: "linear-gradient(135deg, #f8faff 0%, #ffffff 100%)",
@@ -340,60 +582,130 @@ function LearnLanguagePage({ profession }) {
               gap: 20,
               alignItems: "center",
               boxShadow: "0 4px 12px rgba(102,126,234,0.08)",
-              transition: "all 0.3s"
+              transition: "all 0.3s",
             }}
           >
             <div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#667eea", marginBottom: 4 }}>{item.your}</div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#667eea",
+                  marginBottom: 4,
+                }}
+              >
+                {item.your}
+              </div>
               <div style={{ fontSize: 13, color: "#64748b" }}>What you say</div>
             </div>
             <div style={{ fontSize: 24, color: "#94a3b8" }}>⟷</div>
             <div>
-              <div style={{ fontSize: 20, fontWeight: 700, color: "#764ba2", marginBottom: 4 }}>{item.tech}</div>
+              <div
+                style={{
+                  fontSize: 20,
+                  fontWeight: 700,
+                  color: "#764ba2",
+                  marginBottom: 4,
+                }}
+              >
+                {item.tech}
+              </div>
               <div style={{ fontSize: 13, color: "#64748b" }}>Tech term</div>
             </div>
-            <div style={{ gridColumn: "1 / -1", marginTop: 8, padding: 16, background: "white", borderRadius: 8, fontSize: 14, color: "#475569", lineHeight: 1.5 }}>
+            <div
+              style={{
+                gridColumn: "1 / -1",
+                marginTop: 8,
+                padding: 16,
+                background: "white",
+                borderRadius: 8,
+                fontSize: 14,
+                color: "#475569",
+                lineHeight: 1.5,
+              }}
+            >
               💡 {item.explanation}
             </div>
           </div>
         ))}
       </div>
 
-      <div style={{ marginTop: 40, padding: 24, background: "#fef3c7", borderRadius: 16, border: "2px solid #fbbf24" }}>
-        <h3 style={{ margin: "0 0 12px 0", color: "#92400e", fontSize: 18 }}>✨ The Big Picture</h3>
+      <div
+        style={{
+          marginTop: 40,
+          padding: 24,
+          background: "#fef3c7",
+          borderRadius: 16,
+          border: "2px solid #fbbf24",
+        }}
+      >
+        <h3 style={{ margin: "0 0 12px 0", color: "#92400e", fontSize: 18 }}>
+          ✨ The Big Picture
+        </h3>
         <p style={{ margin: 0, color: "#78350f", lineHeight: 1.6 }}>
-          {profession === "Real Estate" && "Clustering helps you automatically group properties into market segments, find comparable sales, and identify unique investment opportunities—all based on the features you already track."}
-          {profession === "Law" && "Clustering helps you automatically categorize cases, find relevant precedents, and identify unusual cases that need special attention—based on the characteristics you already record."}
-          {profession === "Journalism" && "Clustering helps you automatically organize your coverage into beats, spot trending topics, and identify unique stories worth deeper investigation—based on the metrics you already measure."}
+          {profession === "Real Estate" &&
+            "Clustering helps you automatically group properties into market segments, find comparable sales, and identify unique investment opportunities—all based on the features you already track."}
+          {profession === "Law" &&
+            "Clustering helps you automatically categorize cases, find relevant precedents, and identify unusual cases that need special attention—based on the characteristics you already record."}
+          {profession === "Journalism" &&
+            "Clustering helps you automatically organize your coverage into beats, spot trending topics, and identify unique stories worth deeper investigation—based on the metrics you already measure."}
         </p>
       </div>
     </div>
   );
 }
 
-function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) {
+function InteractiveTutorialPage({
+  profession,
+  tutorialStep,
+  setTutorialStep,
+}) {
   const steps = {
     "Real Estate": [
-      { title: "Step 1: Your Data", desc: "You have 50 property listings. Each has a size (sqft) and price." },
-      { title: "Step 2: Set Walking Distance", desc: "Properties within $50k and 200 sqft are 'walking distance' apart." },
-      { title: "Step 3: Minimum Neighborhood", desc: "Need at least 4 similar properties to call it a neighborhood." },
-      { title: "Step 4: Find Neighborhoods", desc: "System groups properties automatically—no manual sorting!" },
-      { title: "Step 5: Spot Outliers", desc: "Unique properties (luxury penthouse, fixer-upper) stand alone." }
+      {
+        title: "Step 1: Your Data",
+        desc: "Each dot represents a property — with its size (sqft) on the X-axis and price ($) on the Y-axis. Together, they form your housing market landscape.",
+      },
+      {
+        title: "Step 2: Set Walking Distance",
+        desc: "Now define what counts as 'close'. Properties within a certain range of size and price (ε — epsilon) are considered neighbors or within walking distance.",
+      },
+      {
+        title: "Step 3: Minimum Neighborhood",
+        desc: "Set how many similar properties (minPts) are needed nearby to form a valid neighborhood. Fewer points = smaller clusters; more points = stronger grouping.",
+      },
+      {
+        title: "Step 4: Find Neighborhoods",
+        desc: "DBSCAN automatically discovers clusters — grouping similar properties into natural neighborhoods without any manual classification or prior labels.",
+      },
+      {
+        title: "Step 5: Spot Outliers",
+        desc: "Not every property fits in! Outliers like luxury penthouses or fixer-uppers stand apart — shown as isolated points for further review or special handling.",
+      },
     ],
-    "Law": [
-      { title: "Step 1: Your Cases", desc: "You have 50 cases. Each has duration and complexity score." },
-      { title: "Step 2: Define Similarity", desc: "Cases within 30 days and 10 complexity points are 'similar'." },
-      { title: "Step 3: Minimum Pattern", desc: "Need at least 4 similar cases to establish a pattern." },
-      { title: "Step 4: Auto-Categorize", desc: "System groups cases by type automatically!" },
-      { title: "Step 5: Flag Unique Cases", desc: "Landmark or complex cases that need special review." }
-    ],
-    "Journalism": [
-      { title: "Step 1: Your Articles", desc: "You have 50 articles. Each has word count and engagement score." },
-      { title: "Step 2: Topic Similarity", desc: "Articles within 500 words and 20 engagement points are 'similar'." },
-      { title: "Step 3: Minimum Beat", desc: "Need at least 4 articles to establish a recurring beat." },
-      { title: "Step 4: Auto-Organize", desc: "System groups articles by topic automatically!" },
-      { title: "Step 5: Find Standouts", desc: "Unique investigations or viral pieces that stand alone." }
-    ]
+    Journalism: [
+  {
+    title: "Step 1: Your Articles",
+    desc: "You’re managing 50 news stories. Each has a word count and engagement score that reflect audience reach and interest.",
+  },
+  {
+    title: "Step 2: Topic Similarity",
+    desc: "Articles that differ by less than 500 words and 20 engagement points are treated as covering similar topics.",
+  },
+  {
+    title: "Step 3: Minimum Beat",
+    desc: "At least 4 similar stories are needed before the system recognizes a recurring beat or news trend.",
+  },
+  {
+    title: "Step 4: Auto-Organize",
+    desc: "The system automatically clusters stories into beats — like politics, climate, or sports — without manual sorting.",
+  },
+  {
+    title: "Step 5: Find Standouts",
+    desc: "Exceptional or one-off stories, such as exclusive investigations or viral reports, are flagged as unique pieces.",
+  },
+],
+
   };
 
   const currentSteps = steps[profession];
@@ -401,12 +713,25 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
 
   return (
     <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <h2 style={{ fontSize: 32, color: "#1e293b", marginBottom: 40, textAlign: "center" }}>
+      <h2
+        style={{
+          fontSize: 32,
+          color: "#1e293b",
+          marginBottom: 40,
+          textAlign: "center",
+        }}
+      >
         Interactive Tutorial: How It Works
       </h2>
 
       <div style={{ marginBottom: 40 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 12,
+          }}
+        >
           {currentSteps.map((step, idx) => (
             <div
               key={idx}
@@ -416,7 +741,7 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
                 background: idx <= tutorialStep ? "#667eea" : "#e2e8f0",
                 marginRight: idx < currentSteps.length - 1 ? 8 : 0,
                 borderRadius: 4,
-                transition: "all 0.3s"
+                transition: "all 0.3s",
               }}
             />
           ))}
@@ -426,14 +751,35 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
         </div>
       </div>
 
-      <div style={{ background: "white", border: "2px solid #e0e7ff", borderRadius: 16, padding: 40, marginBottom: 30 }}>
-        <h3 style={{ fontSize: 28, color: "#667eea", marginBottom: 16 }}>{current.title}</h3>
-        <p style={{ fontSize: 18, color: "#475569", lineHeight: 1.6, marginBottom: 30 }}>{current.desc}</p>
+      <div
+        style={{
+          background: "white",
+          border: "2px solid #e0e7ff",
+          borderRadius: 16,
+          padding: 40,
+          marginBottom: 30,
+        }}
+      >
+        <h3 style={{ fontSize: 28, color: "#667eea", marginBottom: 16 }}>
+          {current.title}
+        </h3>
+        <p
+          style={{
+            fontSize: 18,
+            color: "#475569",
+            lineHeight: 1.6,
+            marginBottom: 30,
+          }}
+        >
+          {current.desc}
+        </p>
 
         <TutorialVisual step={tutorialStep} profession={profession} />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 20 }}>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
+      >
         <button
           onClick={() => setTutorialStep(Math.max(0, tutorialStep - 1))}
           disabled={tutorialStep === 0}
@@ -445,23 +791,31 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
             cursor: tutorialStep === 0 ? "not-allowed" : "pointer",
             fontWeight: 600,
             color: tutorialStep === 0 ? "#94a3b8" : "#1e293b",
-            opacity: tutorialStep === 0 ? 0.5 : 1
+            opacity: tutorialStep === 0 ? 0.5 : 1,
           }}
         >
           ← Previous Step
         </button>
         <button
-          onClick={() => setTutorialStep(Math.min(currentSteps.length - 1, tutorialStep + 1))}
+          onClick={() =>
+            setTutorialStep(Math.min(currentSteps.length - 1, tutorialStep + 1))
+          }
           disabled={tutorialStep === currentSteps.length - 1}
           style={{
             padding: "12px 24px",
             border: "none",
-            background: tutorialStep === currentSteps.length - 1 ? "#e2e8f0" : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            background:
+              tutorialStep === currentSteps.length - 1
+                ? "#e2e8f0"
+                : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             borderRadius: 8,
-            cursor: tutorialStep === currentSteps.length - 1 ? "not-allowed" : "pointer",
+            cursor:
+              tutorialStep === currentSteps.length - 1
+                ? "not-allowed"
+                : "pointer",
             fontWeight: 600,
             color: "white",
-            opacity: tutorialStep === currentSteps.length - 1 ? 0.5 : 1
+            opacity: tutorialStep === currentSteps.length - 1 ? 0.5 : 1,
           }}
         >
           Next Step →
@@ -472,8 +826,8 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
 }
 
 function TutorialVisual({ step = 0, profession = "Journalism" }) {
-  const [epsCoord, setepsCoord] = useState(90) // tweak this if clusters look too merged/split
-  const [minPts, setminPts] = useState(4)
+  const [epsCoord, setepsCoord] = useState(55); // tweak this if clusters look too merged/split
+  const [minPts, setminPts] = useState(6);
   const svgRef = useRef(null);
 
   // generate new random shapes *once per mount* (user chose option 1).
@@ -487,9 +841,24 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
     const data = [...c1, ...c2, ...c3, ...c4];
     // small chance to add a few noise points randomly scattered
     for (let i = 0; i < 6; i++) {
-      if (Math.random() < 0.5) data.push({ id: `NOISE-${i}`, x: Math.random() * 880 + 10, y: Math.random() * 420 + 10 });
+      if (Math.random() < 0.5)
+        data.push({
+          id: `NOISE-${i}`,
+          x: Math.random() * 880 + 10,
+          y: Math.random() * 420 + 10,
+        });
     }
-    return { baseData: data, colors: ["#667eea", "#10b981", "#f59e0b", "#ef4444", "#7c3aed", "#06b6d4"] };
+    return {
+      baseData: data,
+      colors: [
+        "#667eea",
+        "#10b981",
+        "#f59e0b",
+        "#ef4444",
+        "#7c3aed",
+        "#06b6d4",
+      ],
+    };
   }, []); // empty => new random shapes on mount
 
   useEffect(() => {
@@ -503,28 +872,55 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
     const yScale = d3.scaleLinear().domain([0, H]).range([H, 0]); // inverted: higher y => up
 
     // background
-    svg.append("rect").attr("width", W).attr("height", H).attr("rx", 14).attr("fill", "#f8fafc");
+    svg
+      .append("rect")
+      .attr("width", W)
+      .attr("height", H)
+      .attr("rx", 14)
+      .attr("fill", "#f8fafc");
 
     // axis labels by profession
-    let xLabel = "X-Axis", yLabel = "Y-Axis";
-    if (profession === "Law") { xLabel = "Case Duration (days)"; yLabel = "Case Complexity Score"; }
-    else if (profession === "Real Estate") { xLabel = "Property Size (sqft)"; yLabel = "Property Price ($)"; }
-    else { xLabel = "Article Word Count"; yLabel = "Engagement Score"; }
+    let xLabel = "X-Axis",
+      yLabel = "Y-Axis";
+    if (profession === "Law") {
+      xLabel = "Case Duration (days)";
+      yLabel = "Case Complexity Score";
+    } else if (profession === "Real Estate") {
+      xLabel = "Property Size (sqft)";
+      yLabel = "Property Price ($)";
+    } else {
+      xLabel = "Article Word Count";
+      yLabel = "Engagement Score";
+    }
 
-    svg.append("text").attr("x", W / 2).attr("y", H - 8).attr("text-anchor", "middle")
-      .attr("font-size", 13).attr("fill", "#475569").text(xLabel);
+    svg
+      .append("text")
+      .attr("x", W / 2)
+      .attr("y", H - 8)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 13)
+      .attr("fill", "#475569")
+      .text(xLabel);
 
-    svg.append("text").attr("x", 22).attr("y", H / 2)
-      .attr("transform", `rotate(-90, 22, ${H / 2})`).attr("text-anchor", "middle")
-      .attr("font-size", 13).attr("fill", "#475569").text(yLabel);
+    svg
+      .append("text")
+      .attr("x", 22)
+      .attr("y", H / 2)
+      .attr("transform", `rotate(-90, 22, ${H / 2})`)
+      .attr("text-anchor", "middle")
+      .attr("font-size", 13)
+      .attr("fill", "#475569")
+      .text(yLabel);
 
     // compose data (clone base data so we don't mutate memoized array)
-    const data = baseData.map(d => ({ ...d }));
+    const data = baseData.map((d) => ({ ...d }));
     // if step >= 4, add a clear outlier
     if (step >= 4) data.push({ id: "OUT-1", x: 800, y: 70 });
 
     // Tooltip
-    const tooltip = d3.select("body").append("div")
+    const tooltip = d3
+      .select("body")
+      .append("div")
       .attr("class", "db-tooltip")
       .style("position", "absolute")
       .style("pointer-events", "none")
@@ -538,44 +934,80 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
       .style("opacity", 0);
 
     function describePoint(d) {
-      const entity = profession === "Law" ? "Case" : profession === "Real Estate" ? "Property" : "Article";
-      const clusterText = (d._label === undefined) ? "—" : (d._label === -1 ? "Outlier" : `Cluster ${d._label + 1}`);
-      return `<strong>${entity}</strong><br/>${clusterText}<br/>X: ${d.x.toFixed(1)} — Y: ${d.y.toFixed(1)}`;
+      const entity =
+        profession === "Law"
+          ? "Case"
+          : profession === "Real Estate"
+          ? "Property"
+          : "Article";
+      const clusterText =
+        d._label === undefined
+          ? "—"
+          : d._label === -1
+          ? "Outlier"
+          : `Cluster ${d._label + 1}`;
+      return `<strong>${entity}</strong><br/>${clusterText}<br/>X: ${d.x.toFixed(
+        1
+      )} — Y: ${d.y.toFixed(1)}`;
     }
 
     // initial attributes and entrance animation
     // store initial group centers to animate from
     const centers = [
-      { x: d3.mean(baseData.slice(0, 18), p => p.x) || 120, y: d3.mean(baseData.slice(0, 18), p => p.y) || 140 },
-      { x: d3.mean(baseData.slice(18, 38), p => p.x) || 420, y: d3.mean(baseData.slice(18, 38), p => p.y) || 120 },
-      { x: d3.mean(baseData.slice(38, 56), p => p.x) || 640, y: d3.mean(baseData.slice(38, 56), p => p.y) || 320 },
-      { x: d3.mean(baseData.slice(56, 74), p => p.x) || 220, y: d3.mean(baseData.slice(56, 74), p => p.y) || 320 }
+      {
+        x: d3.mean(baseData.slice(0, 18), (p) => p.x) || 120,
+        y: d3.mean(baseData.slice(0, 18), (p) => p.y) || 140,
+      },
+      {
+        x: d3.mean(baseData.slice(18, 38), (p) => p.x) || 420,
+        y: d3.mean(baseData.slice(18, 38), (p) => p.y) || 120,
+      },
+      {
+        x: d3.mean(baseData.slice(38, 56), (p) => p.x) || 640,
+        y: d3.mean(baseData.slice(38, 56), (p) => p.y) || 320,
+      },
+      {
+        x: d3.mean(baseData.slice(56, 74), (p) => p.x) || 220,
+        y: d3.mean(baseData.slice(56, 74), (p) => p.y) || 320,
+      },
     ];
 
     // Draw points as groups so we can animate transform easily
-    const group = svg.selectAll("g.pt")
-      .data(data, d => d.id)
+    const group = svg
+      .selectAll("g.pt")
+      .data(data, (d) => d.id)
       .enter()
       .append("g")
       .attr("class", "pt")
-      .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`);
+      .attr("transform", (d) => `translate(${xScale(d.x)},${yScale(d.y)})`);
 
-    group.append("circle")
+    group
+      .append("circle")
       .attr("r", 0)
       .attr("fill", "#64748b")
       .attr("stroke", "white")
       .attr("stroke-width", 1.2)
       .style("cursor", "pointer")
       .on("mouseover", function (event, d) {
-        d3.select(this).transition().duration(120).attr("r", 12).attr("stroke-width", 2);
+        d3.select(this)
+          .transition()
+          .duration(120)
+          .attr("r", 12)
+          .attr("stroke-width", 2);
         tooltip.transition().duration(120).style("opacity", 1);
         tooltip.html(describePoint(d));
       })
       .on("mousemove", (event) => {
-        tooltip.style("left", event.pageX + 12 + "px").style("top", event.pageY - 28 + "px");
+        tooltip
+          .style("left", event.pageX + 12 + "px")
+          .style("top", event.pageY - 28 + "px");
       })
       .on("mouseout", function () {
-        d3.select(this).transition().duration(120).attr("r", 8).attr("stroke-width", 1.2);
+        d3.select(this)
+          .transition()
+          .duration(120)
+          .attr("r", 8)
+          .attr("stroke-width", 1.2);
         tooltip.transition().duration(120).style("opacity", 0);
       });
 
@@ -585,13 +1017,17 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
       // choose a center based on original partitioning - not strict but provides a visual grouping origin
       const center = centers[i % centers.length];
       node.attr("transform", `translate(${center.x},${yScale(center.y)})`);
-      const delay = (Math.abs(d.x - center.x) + Math.abs(d.y - center.y)) * 0.35 + Math.random() * 200;
-      node.transition()
+      const delay =
+        (Math.abs(d.x - center.x) + Math.abs(d.y - center.y)) * 0.35 +
+        Math.random() * 200;
+      node
+        .transition()
         .delay(delay)
         .duration(900)
         .attr("transform", `translate(${xScale(d.x)},${yScale(d.y)})`)
         .ease(d3.easeCubicOut);
-      node.select("circle")
+      node
+        .select("circle")
         .transition()
         .delay(delay)
         .duration(900)
@@ -603,7 +1039,8 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
       const example = data[Math.floor(data.length * 0.25)] || data[0];
       const epsR = 70;
       const epsG = svg.append("g").attr("class", "eps-group");
-      epsG.append("circle")
+      epsG
+        .append("circle")
         .attr("cx", xScale(example.x))
         .attr("cy", yScale(example.y))
         .attr("r", 0)
@@ -618,7 +1055,8 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
         .attr("opacity", 0.9)
         .ease(d3.easeCubicOut);
 
-      epsG.append("text")
+      epsG
+        .append("text")
         .attr("x", xScale(example.x))
         .attr("y", yScale(example.y) - epsR - 10)
         .attr("text-anchor", "middle")
@@ -656,15 +1094,22 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
         clusters[l].push(d);
       });
 
-      const clusterKeys = Object.keys(clusters).map(k => +k).sort((a, b) => a - b);
+      const clusterKeys = Object.keys(clusters)
+        .map((k) => +k)
+        .sort((a, b) => a - b);
       clusterKeys.forEach((ck, idx) => {
         const pts = clusters[ck];
         if (!pts || pts.length < 3) return; // need at least 3 for hull
-        const hullPoints = d3.polygonHull(pts.map(p => [xScale(p.x), yScale(p.y)]));
+        const hullPoints = d3.polygonHull(
+          pts.map((p) => [xScale(p.x), yScale(p.y)])
+        );
         if (!hullPoints) return;
 
-        const hullPathGen = d3.line().curve(d3.curveCatmullRomClosed.alpha(0.5));
-        const path = svg.append("path")
+        const hullPathGen = d3
+          .line()
+          .curve(d3.curveCatmullRomClosed.alpha(0.5));
+        const path = svg
+          .append("path")
           .attr("d", hullPathGen(hullPoints))
           .attr("fill", colors[idx % colors.length])
           .attr("fill-opacity", 0)
@@ -673,15 +1118,22 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
           .attr("opacity", 0.9);
 
         const len = path.node().getTotalLength();
-        path.attr("stroke-dasharray", `${len} ${len}`).attr("stroke-dashoffset", len)
-          .transition().duration(1200).ease(d3.easeCubicOut)
+        path
+          .attr("stroke-dasharray", `${len} ${len}`)
+          .attr("stroke-dashoffset", len)
+          .transition()
+          .duration(1200)
+          .ease(d3.easeCubicOut)
           .attr("stroke-dashoffset", 0)
-          .on("end", () => path.transition().duration(900).attr("fill-opacity", 0.12));
+          .on("end", () =>
+            path.transition().duration(900).attr("fill-opacity", 0.12)
+          );
 
         // centroid label
-        const cx = d3.mean(pts, p => p.x);
-        const cy = d3.mean(pts, p => p.y);
-        svg.append("text")
+        const cx = d3.mean(pts, (p) => p.x);
+        const cy = d3.mean(pts, (p) => p.y);
+        svg
+          .append("text")
           .attr("x", xScale(cx))
           .attr("y", yScale(cy) - 36)
           .attr("text-anchor", "middle")
@@ -690,11 +1142,16 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
           .attr("fill", colors[idx % colors.length])
           .attr("opacity", 0)
           .text(`Cluster ${ck + 1}`)
-          .transition().delay(1000).duration(600).attr("opacity", 1);
+          .transition()
+          .delay(1000)
+          .duration(600)
+          .attr("opacity", 1);
       });
 
       // recolor points (animate)
-      svg.selectAll("g.pt").select("circle")
+      svg
+        .selectAll("g.pt")
+        .select("circle")
         .transition()
         .delay((d, i) => 900 + (i % 8) * 30)
         .duration(700)
@@ -705,50 +1162,97 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
           return colors[(idx === -1 ? lab : idx) % colors.length] ?? "#64748b";
         });
     }
-
+    let dx, dy;
     // Step >=4: highlight outliers (both computed noise and explicit OUT-1)
     if (step >= 4) {
       // computed outliers (label === -1)
-      const noisePts = data.filter(d => d._label === -1);
+
+      const noisePts = data.filter((d) => d._label === -1);
       noisePts.forEach((n) => {
         // draw a subtle halo
-        svg.append("circle")
-          .attr("cx", xScale(n.x)).attr("cy", yScale(n.y)).attr("r", 10)
-          .attr("fill", "none").attr("stroke", "#fb7185").attr("stroke-width", 1.2)
+        dx = xScale(n.x);
+        dy = yScale(n.y);
+        svg
+          .append("circle")
+          .attr("cx", xScale(n.x))
+          .attr("cy", yScale(n.y))
+          .attr("r", 10)
+          .attr("fill", "none")
+          .attr("stroke", "#fb7185")
+          .attr("stroke-width", 1.2)
           .attr("opacity", 0.0)
-          .transition().duration(400).attr("opacity", 0.9)
-          .transition().duration(600).attr("opacity", 0.25).remove();
+          .transition()
+          .duration(400)
+          .attr("opacity", 0.9)
+          .transition()
+          .duration(600)
+          .attr("opacity", 0.25)
+          .remove();
       });
 
       // explicit OUT-1 pulse (if present)
-      const out = data.find(d => d.id === "OUT-1");
+      const out = data.find((d) => d.id === "OUT-1");
+      console.log(dx,dy)
       if (out) {
-        const pulse = svg.append("circle")
-          .attr("cx", xScale(out.x)).attr("cy", yScale(out.y)).attr("r", 10)
-          .attr("fill", "none").attr("stroke", "#f97316").attr("stroke-width", 2)
+        const pulse = svg
+          .append("circle")
+          .attr("cx", dx)
+          .attr("cy", dy)
+          .attr("r", 10)
+          .attr("fill", "none")
+          .attr("stroke", "#f97316")
+          .attr("stroke-width", 2)
           .attr("opacity", 0.95);
         (function repeat() {
-          pulse.attr("r", 10).attr("opacity", 0.95)
-            .transition().duration(900).attr("r", 32).attr("opacity", 0.12)
-            .transition().duration(900).attr("r", 12).attr("opacity", 0.9)
+          pulse
+            .attr("r", 10)
+            .attr("opacity", 0.95)
+            .transition()
+            .duration(900)
+            .attr("r", 32)
+            .attr("opacity", 0.12)
+            .transition()
+            .duration(900)
+            .attr("r", 12)
+            .attr("opacity", 0.9)
             .on("end", repeat);
         })();
-        svg.append("circle")
-          .attr("cx", xScale(out.x)).attr("cy", yScale(out.y)).attr("r", 10)
-          .attr("fill", "#f97316").attr("opacity", 0.85)
-          .transition().duration(700).attr("r", 12);
-        svg.append("text")
-          .attr("x", xScale(out.x) + 18).attr("y", yScale(out.y) - 8)
-          .attr("font-size", 13).attr("font-weight", 700).attr("fill", "#475569")
-          .attr("opacity", 0).text("Outlier — needs review")
-          .transition().delay(400).duration(600).attr("opacity", 1);
+        svg
+          .append("circle")
+          .attr("cx", xScale(out.x))
+          .attr("cy", yScale(out.y))
+          .attr("r", 10)
+          .attr("fill", "#f97316")
+          .attr("opacity", 0.85)
+          .transition()
+          .duration(700)
+          .attr("r", 12);
+        svg
+          .append("text")
+          .attr("x", xScale(out.x) + 18)
+          .attr("y", yScale(out.y) - 8)
+          .attr("font-size", 13)
+          .attr("font-weight", 700)
+          .attr("fill", "#475569")
+          .attr("opacity", 0)
+          .text("Outlier — needs review")
+          .transition()
+          .delay(400)
+          .duration(600)
+          .attr("opacity", 1);
       }
     }
 
     // small hint text
-    svg.append("text")
-      .attr("x", 18).attr("y", 18).attr("font-size", 12).attr("fill", "#475569")
-      .text("Hover points to see details — clusters discovered via DBSCAN at Step 3.");
+    svg
+      .append("text")
+      .attr("x", 18)
+      .attr("y", 18)
+      .attr("font-size", 12)
+      .attr("fill", "#475569")
+      .text(
+        "Hover points to see details — clusters discovered via DBSCAN at Step 3."
+      );
 
     // cleanup
     return () => {
@@ -759,11 +1263,28 @@ function TutorialVisual({ step = 0, profession = "Journalism" }) {
   }, [step, profession, baseData, colors, epsCoord, minPts]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <svg ref={svgRef} width={900} height={440}
-        style={{ borderRadius: 14, boxShadow: "0 6px 20px rgba(2,6,23,0.08)", background: "transparent" }} />
-      {( 3 <= step && step != 4) && (
-        <div style={{ marginTop: 20, display: "flex", gap: "24px", alignItems: "center" }}>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <svg
+        ref={svgRef}
+        width={900}
+        height={440}
+        style={{
+          borderRadius: 14,
+          boxShadow: "0 6px 20px rgba(2,6,23,0.08)",
+          background: "transparent",
+        }}
+      />
+      {3 <= step && step != 4 && (
+        <div
+          style={{
+            marginTop: 20,
+            display: "flex",
+            gap: "24px",
+            alignItems: "center",
+          }}
+        >
           <label style={{ fontSize: 13, color: "#334155" }}>
             ε (epsilon): {epsCoord}
             <input
