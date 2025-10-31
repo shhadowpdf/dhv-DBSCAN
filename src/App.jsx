@@ -1,38 +1,44 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 import { ChevronRight, ChevronLeft, Play, Info, Users, TrendingUp, FileText, Home } from "lucide-react";
+import clustering from 'density-clustering'
 
 /* ---------- shape generators ---------- */
-function makeCircle(cx, cy, r, n, id) {
+function makeCircle(cx, cy, r, n, prefix = "") {
   return Array.from({ length: n }, (_, i) => {
     const a = Math.random() * Math.PI * 2;
-    const rad = r * (0.7 + Math.random() * 0.5);
-    return { id: `${id}${i}`, x: cx + Math.cos(a) * rad, y: cy + Math.sin(a) * rad };
+    const rr = r * (0.7 + Math.random() * 0.4);
+    return { id: `${prefix}${i}`, x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr };
   });
 }
-function makeEllipse(cx, cy, rx, ry, n, id) {
+function makeEllipse(cx, cy, rx, ry, n, prefix = "") {
   return Array.from({ length: n }, (_, i) => {
     const a = Math.random() * Math.PI * 2;
     const rr = 0.8 + Math.random() * 0.4;
-    return { id: `${id}${i}`, x: cx + Math.cos(a) * rx * rr, y: cy + Math.sin(a) * ry * rr };
+    return { id: `${prefix}${i}`, x: cx + Math.cos(a) * rx * rr, y: cy + Math.sin(a) * ry * rr };
   });
 }
-function makeLine(x1, y1, x2, y2, spread, n, id) {
+function makeLine(x1, y1, x2, y2, n, jitter = 2, prefix = "") {
   return Array.from({ length: n }, (_, i) => {
-    const t = Math.random();
-    return { id: `${id}${i}`, x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * spread, y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * spread };
+    const t = i / Math.max(1, n - 1);
+    return {
+      id: `${prefix}${i}`,
+      x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * jitter,
+      y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * jitter
+    };
   });
 }
-function makeCrescent(cx, cy, r1, r2, n, id) {
-  const pts = [];
+function makeCrescent(cx, cy, r1, r2, n, prefix = "") {
+  const out = [];
   for (let i = 0; i < n; i++) {
     const a = Math.random() * Math.PI * 2;
-    const r = r1 + Math.random() * (r2 - r1);
-    const x = cx + Math.cos(a) * r;
-    const y = cy + Math.sin(a) * r;
-    if ((x - (cx + r1 * 0.4)) ** 2 + (y - cy) ** 2 > (r1 * 0.6) ** 2) pts.push({ id: `${id}${i}`, x, y });
+    const rr = r1 + Math.random() * (r2 - r1);
+    const x = cx + Math.cos(a) * rr;
+    const y = cy + Math.sin(a) * rr;
+    // remove some interior points to create a crescent-like shape
+    if ((x - (cx + r1 * 0.35)) ** 2 + (y - cy) ** 2 > (r1 * 0.5) ** 2) out.push({ id: `${prefix}${i}`, x, y });
   }
-  return pts;
+  return out;
 }
 
 /* ---------- datasets ---------- */
@@ -65,36 +71,39 @@ function makeDataset(kind) {
 function dbscan(points, eps, minPts) {
   const n = points.length;
   const labels = new Array(n).fill(null);
-  let cid = 0;
   const dist = (i, j) => Math.hypot(points[i].x - points[j].x, points[i].y - points[j].y);
-  function nbr(i) {
+
+  function region(i) {
     const out = [];
     for (let j = 0; j < n; j++) if (dist(i, j) <= eps) out.push(j);
     return out;
   }
+
+  let cid = 0;
   for (let i = 0; i < n; i++) {
     if (labels[i] !== null) continue;
-    const nbs = nbr(i);
-    if (nbs.length < minPts) {
+    const nbrs = region(i);
+    if (nbrs.length < minPts) {
       labels[i] = -1;
       continue;
     }
     labels[i] = cid;
-    const stack = [...nbs];
+    const stack = [...nbrs];
     while (stack.length) {
       const j = stack.pop();
-      if (labels[j] === -1) labels[j] = cid;
+      if (labels[j] === -1) labels[j] = cid; // previously marked noise -> becomes border
       if (labels[j] !== null) continue;
       labels[j] = cid;
-      const n2 = nbr(j);
-      if (n2.length >= minPts) {
-        for (const k of n2) if (!stack.includes(k)) stack.push(k);
+      const nb2 = region(j);
+      if (nb2.length >= minPts) {
+        for (const k of nb2) if (!stack.includes(k)) stack.push(k);
       }
     }
     cid++;
   }
   return labels;
 }
+
 
 /* ---------- MAIN DASHBOARD COMPONENT ---------- */
 export default function DBSCANProfessionalDashboard() {
@@ -465,23 +474,18 @@ function InteractiveTutorialPage({ profession, tutorialStep, setTutorialStep }) 
 
 function TutorialVisual({ step, profession }) {
   const svgRef = useRef(null);
-  const clustersDef = useMemo(()=> [
-      { name: "Cluster 1", shape: "circle", pts: makeCircle(260, 180, 64, 14, "C1-") },
-      { name: "Cluster 2", shape: "ellipse", pts: makeEllipse(560, 120, 90, 42, 14, "C2-") },
-      { name: "Cluster 3", shape: "crescent", pts: makeCrescent(420, 300, 48, 84, 14, "C3-") },
-      { name: "Cluster 4", shape: "line", pts: makeLine(160, 320, 320, 380, 18, 12, "C4-") }
-    ],[profession]);
+  const [eps, setEps] = useState(45);
+  const [minPts, setMinPts] = useState(5);
+
   useEffect(() => {
     const W = 900;
     const H = 440;
     const svg = d3.select(svgRef.current);
-    const xScale = d3.scaleLinear().domain([0, W]).range([0, W]);
-    const yScale = d3.scaleLinear().domain([0, H]).range([H, 0]); // <-- Notice reversed range
-
     svg.selectAll("*").remove();
 
     const colors = ["#667eea", "#10b981", "#f59e0b", "#ef4444"];
-    const bg = svg.append("rect")
+
+    svg.append("rect")
       .attr("width", W)
       .attr("height", H)
       .attr("rx", 14)
@@ -517,27 +521,76 @@ function TutorialVisual({ step, profession }) {
       .attr("fill", "#475569")
       .text(yLabel);
 
-    // Create clusters using your shape generators and tag each point with cluster index & shape type
-
-
-    // attach metadata
-    clustersDef.forEach((c, i) => {
-      c.pts.forEach(p => {
-        p.cluster = i;      // cluster index
-        p.clusterName = c.name;
-        p.shape = c.shape;
-      });
-    });
-
-    // Compose flat data points
-    const data = clustersDef.flatMap(c => c.pts);
-
-    // add an outlier if step >= 4
-    if (step >= 4) {
-      data.push({ id: "OUT-1", x: 800, y: 70, cluster: -1, clusterName: "Outlier", shape: "outlier" });
+    // --- Random shapes for data generation ---
+    function randomPointInShape(shapeType) {
+      switch (shapeType) {
+        case "circle":
+          const r = 60;
+          return {
+            x: 200 + r * Math.cos(Math.random() * 2 * Math.PI),
+            y: 160 + r * Math.sin(Math.random() * 2 * Math.PI),
+          };
+        case "ellipse":
+          return {
+            x: 520 + 100 * Math.cos(Math.random() * 2 * Math.PI),
+            y: 160 + 40 * Math.sin(Math.random() * 2 * Math.PI),
+          };
+        case "line":
+          return {
+            x: 200 + Math.random() * 240,
+            y: 320 + Math.random() * 50,
+          };
+        case "crescent":
+          const angle = Math.random() * 2 * Math.PI;
+          const rad = 60 + Math.random() * 10;
+          return {
+            x: 400 + rad * Math.cos(angle),
+            y: 280 + rad * Math.sin(angle) * 0.7,
+          };
+        default:
+          return { x: Math.random() * W, y: Math.random() * H };
+      }
     }
 
-    // tooltip element
+    const shapeTypes = ["circle", "ellipse", "line", "crescent"];
+    let data = [];
+    for (let i = 0; i < 4; i++) {
+      for (let j = 0; j < 25; j++) {
+        const pt = randomPointInShape(shapeTypes[i]);
+        pt.id = `${shapeTypes[i]}-${i}-${j}`;
+        data.push(pt);
+      }
+    }
+
+    // --- Always keep a few random outliers ---
+    const outliers = [];
+    for (let i = 0; i < 2; i++) {
+      const idx = Math.floor(Math.random() * data.length);
+      outliers.push(data.splice(idx, 1)[0]);
+    }
+
+    // --- Run DBSCAN (only in step >= 3) ---
+    let clusters = [];
+    if (step >= 3) {
+      const dbscan = new clustering.DBSCAN();
+      clusters = dbscan.run(
+        data.map(p => [p.x, p.y]),
+        eps,
+        minPts
+      );
+      clusters.forEach((cluster, ci) => {
+        cluster.forEach(idx => {
+          data[idx].cluster = ci;
+        });
+      });
+      const dbscanOutliers = dbscan.noise.map(idx => data[idx]);
+      outliers.push(...dbscanOutliers);
+    }
+
+    outliers.forEach(pt => (pt.cluster = -1));
+    const finalData = [...data, ...outliers];
+
+    // --- Tooltip ---
     const tooltip = d3.select("body").append("div")
       .attr("class", "db-tooltip")
       .style("position", "absolute")
@@ -551,62 +604,27 @@ function TutorialVisual({ step, profession }) {
       .style("color", "#0f172a")
       .style("opacity", 0);
 
-    // helper to describe a point in profession language
     function describePoint(d) {
       const entity = profession === "Law" ? "Case" : profession === "Real Estate" ? "Property" : "Article";
-      const clusterText = d.cluster === -1 ? "Unique / Outlier" : d.clusterName;
-      // extra human readable features: map x/y to profession-friendly text (approx)
-      const xVal = d.x.toFixed(1);
-      const yVal = d.y.toFixed(1);
-      return `<strong>${entity}</strong><br/>${clusterText}<br/>X: ${xVal} — Y: ${yVal}`;
+      const clusterText = d.cluster === -1 ? "Unique / Outlier" : `Cluster ${d.cluster + 1}`;
+      return `<strong>${entity}</strong><br/>${clusterText}<br/>X: ${d.x.toFixed(1)} — Y: ${d.y.toFixed(1)}`;
     }
 
-    // Intro: add a subtle legend (bottom-right)
-    const legend = svg.append("g").attr("transform", `translate(${W - 220}, ${H - 110})`);
-    legend.append("rect").attr("width", 210).attr("height", 90).attr("rx", 10).attr("fill", "white").attr("stroke", "#e6eef8");
-    legend.append("text").attr("x", 14).attr("y", 20).attr("font-size", 13).attr("font-weight", 700).attr("fill", "#334155").text("Legend");
-    const legendItems = [
-      { text: "Cluster boundary", sym: "rect", color: "#667eea" },
-      { text: "Point (hover for details)", sym: "dot", color: "#64748b" },
-      { text: "Outlier (pulsing)", sym: "circle", color: "#94a3b8" }
-    ];
-    legendItems.forEach((it, i) => {
-      if (it.sym === "rect") {
-        legend.append("rect").attr("x", 16).attr("y", 30 + i * 20).attr("width", 12).attr("height", 8).attr("fill", it.color).attr("opacity", 0.85);
-      } else {
-        legend.append("circle").attr("cx", 22).attr("cy", 34 + i * 20).attr("r", 5).attr("fill", it.color).attr("opacity", 0.85);
-      }
-      legend.append("text").attr("x", 36).attr("y", 35 + i * 20).attr("font-size", 12).attr("fill", "#475569").text(it.text);
-    });
-
-    // MAIN: draw points with entry animation that depends on shape
-    // We'll draw a small center pin position for each cluster shape so points "grow/form" from there
-    const centers = clustersDef.map((c, i) => {
-      // mean center
-      const meanX = d3.mean(c.pts, p => p.x);
-      const meanY = d3.mean(c.pts, p => p.y);
-      return { x: meanX, y: meanY };
-    });
-
-    // Draw points (initially tiny) and animate them based on step
-    const pointSel = svg.selectAll("g.point-wrapper")
-      .data(data, d => d.id)
+    // --- Draw points ---
+    const pointSel = svg.selectAll("circle.pt")
+      .data(finalData)
       .enter()
-      .append("g")
-      .attr("class", "point-wrapper")
-      .attr("transform", d => `translate(${d.x},${yScale(d.y)})`);
-
-    // support shapes visually: circle / ellipse / crescent / line will share same circle node for hover but we animate their "appearance" differently
-    pointSel.append("circle")
-      .attr("class", "pt-core")
+      .append("circle")
+      .attr("class", "pt")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
       .attr("r", 0)
-      .attr("fill", "#64748b")
+      .attr("fill", d => d.cluster === -1 ? "#94a3b8" : "#64748b")
       .attr("stroke", "white")
       .attr("stroke-width", 1.2)
       .style("cursor", "pointer")
       .on("mouseover", function (event, d) {
-        // highlight
-        d3.select(this).transition().duration(140).attr("r", 12).attr("stroke-width", 2);
+        d3.select(this).transition().duration(120).attr("r", 12);
         tooltip.transition().duration(120).style("opacity", 1);
         tooltip.html(describePoint(d));
       })
@@ -614,135 +632,44 @@ function TutorialVisual({ step, profession }) {
         tooltip.style("left", event.pageX + 12 + "px").style("top", event.pageY - 28 + "px");
       })
       .on("mouseout", function () {
-        d3.select(this).transition().duration(140).attr("r", 8).attr("stroke-width", 1.2);
+        d3.select(this).transition().duration(120).attr("r", 8);
         tooltip.transition().duration(120).style("opacity", 0);
       });
 
-    // shape-based entrance animation: points move from cluster center outward (gives "formation" feel)
-    pointSel.each(function (d) {
-      const node = d3.select(this).select("circle.pt-core");
-      const clusterIdx = d.cluster;
-      const from = (clusterIdx >= 0 && clusterIdx < centers.length) ? centers[clusterIdx] : { x: d.x, y: yScale(d.y) };
-      // set initial transform to center then animate to actual position
-      d3.select(this).attr("transform", `translate(${from.x},${from.y})`);
-      // sequential delays so shape appears organically
-      const delay = (Math.abs(d.x - from.x) + Math.abs(yScale(d.y) - from.y)) * 0.6 + Math.random() * 200;
-      d3.select(this)
-        .transition()
-        .delay(delay)
-        .duration(900)
-        .attr("transform", `translate(${d.x},${yScale(d.y)})`)
-        .ease(d3.easeCubicOut);
+    pointSel.transition()
+      .delay((_, i) => i * 15)
+      .duration(700)
+      .attr("r", 8);
 
-      node.transition()
-        .delay(delay)
-        .duration(900)
-        .attr("r", 8)
-        .attr("fill", "#64748b");
-    });
-
-    // STEP 2: show epsilon (neighborhood) around one example point (animated)
-    if (step === 2) {
-      const example = data[1] || data[0];
-      const epsR = 70;
-      const epsG = svg.append("g").attr("class", "eps-group");
-      epsG.append("circle")
-        .attr("cx", example.x)
-        .attr("cy", example.y)
-        .attr("r", 0)
-        .attr("stroke", "#334155")
-        .attr("stroke-dasharray", "6,4")
-        .attr("fill", "none")
-        .attr("stroke-width", 1.8)
-        .attr("opacity", 0.95)
-        .transition()
-        .duration(1100)
-        .attr("r", epsR)
-        .attr("opacity", 0.9)
-        .ease(d3.easeCubicOut);
-
-      // show explanatory label
-      epsG.append("text")
-        .attr("x", example.x)
-        .attr("y", example.y - epsR - 10)
-        .attr("text-anchor", "middle")
-        .attr("font-size", 13)
-        .attr("fill", "#334155")
-        .attr("opacity", 0)
-        .text("ε — similarity radius")
-        .transition()
-        .delay(600)
-        .duration(600)
-        .attr("opacity", 1);
-    }
-
-    // STEP 3 and above: compute convex hulls for each cluster and animate boundary drawing + fill fade-in
+    // --- Step 3: draw convex hulls ---
     if (step >= 3) {
-      clustersDef.forEach((cdef, ci) => {
-        // cluster points array
-        const pts = cdef.pts;
+      clusters.forEach((cluster, ci) => {
+        const pts = cluster.map(idx => data[idx]);
+        if (pts.length < 3) return;
         const hull = d3.polygonHull(pts.map(p => [p.x, p.y]));
-        if (!hull) return;
-        // create smooth curved path from hull points
-        const hullPath = d3.line().curve(d3.curveCardinalClosed.tension(0.5));
+        const hullPathGen = d3.line().curve(d3.curveCatmullRomClosed.alpha(0.7));
         const path = svg.append("path")
-          .attr("d", hullPath(hull))
+          .attr("d", hullPathGen(hull))
           .attr("fill", colors[ci % colors.length])
           .attr("fill-opacity", 0)
           .attr("stroke", colors[ci % colors.length])
           .attr("stroke-width", 2)
-          .attr("stroke-linejoin", "round")
-          .attr("stroke-linecap", "round")
           .attr("opacity", 0.95);
 
-        // animate stroke drawing using stroke-dash technique
-        const totalLen = path.node().getTotalLength();
-        path
-          .attr("stroke-dasharray", `${totalLen} ${totalLen}`)
-          .attr("stroke-dashoffset", totalLen)
+        const len = path.node().getTotalLength();
+        path.attr("stroke-dasharray", `${len} ${len}`)
+          .attr("stroke-dashoffset", len)
           .transition()
           .duration(1400)
           .ease(d3.easeCubicOut)
           .attr("stroke-dashoffset", 0)
-          .on("end", () => {
-            // after stroke draw, fade in fill slightly
-            path.transition().duration(800).attr("fill-opacity", 0.12);
-          });
-
-        // centroid label
-        const cx = d3.mean(pts, p => p.x);
-        const cy = d3.mean(pts, p => p.y);
-        svg.append("text")
-          .attr("x", cx)
-          .attr("y", cy - 36)
-          .attr("text-anchor", "middle")
-          .attr("font-weight", 800)
-          .attr("font-size", 15)
-          .attr("fill", colors[ci % colors.length])
-          .attr("opacity", 0)
-          .text(cdef.name)
-          .transition()
-          .delay(1200)
-          .duration(600)
-          .attr("opacity", 1);
-
-        // slightly "push" cluster points' color into cluster color with easing
-        pts.forEach(pt => {
-          svg.selectAll("g.point-wrapper")
-            .filter(d => d.id === pt.id)
-            .select("circle.pt-core")
-            .transition()
-            .delay(900 + Math.random() * 300)
-            .duration(700)
-            .attr("fill", colors[ci % colors.length]);
-        });
+          .on("end", () => path.transition().duration(800).attr("fill-opacity", 0.12));
       });
     }
 
-    // STEP 4: outlier pulse & label if present
+    // --- Step 4: pulse outliers ---
     if (step >= 4) {
-      const out = data.find(d => d.cluster === -1);
-      if (out) {
+      outliers.forEach(out => {
         const pulse = svg.append("circle")
           .attr("cx", out.x)
           .attr("cy", out.y)
@@ -753,7 +680,6 @@ function TutorialVisual({ step, profession }) {
           .attr("opacity", 0.9)
           .attr("stroke-dasharray", "6,4");
 
-        // infinite pulse loop
         (function repeatPulse() {
           pulse.attr("r", 10).attr("opacity", 0.9)
             .transition()
@@ -767,17 +693,6 @@ function TutorialVisual({ step, profession }) {
             .on("end", repeatPulse);
         })();
 
-        // outline highlight circle
-        svg.append("circle")
-          .attr("cx", out.x)
-          .attr("cy", out.y)
-          .attr("r", 10)
-          .attr("fill", "#94a3b8")
-          .attr("opacity", 0.85)
-          .transition()
-          .duration(700)
-          .attr("r", 12);
-
         svg.append("text")
           .attr("x", out.x + 18)
           .attr("y", out.y - 8)
@@ -790,35 +705,60 @@ function TutorialVisual({ step, profession }) {
           .delay(400)
           .duration(600)
           .attr("opacity", 1);
-      }
+      });
     }
 
-    // Accessibility: keyboard hint for hover interactions (simple)
     svg.append("text")
       .attr("x", 18)
       .attr("y", 18)
       .attr("font-size", 12)
       .attr("fill", "#475569")
-      .text("Hover points to see details — shapes form into clusters across steps.");
+      .text("Hover points to see details — clusters form dynamically via DBSCAN.");
 
-    // cleanup on unmount
-    return () => {
-      tooltip.remove();
-    };
-  }, [step, profession]);
+    return () => tooltip.remove();
+  }, [step, profession, eps, minPts]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
       <svg
         ref={svgRef}
         width={900}
         height={440}
         style={{ borderRadius: 14, boxShadow: "0 6px 20px rgba(2,6,23,0.08)", background: "transparent" }}
       />
+
+      {step >= 3 && (
+        <div style={{ marginTop: 20, display: "flex", gap: "24px", alignItems: "center" }}>
+          <label style={{ fontSize: 13, color: "#334155" }}>
+            ε (epsilon): {eps}
+            <input
+              type="range"
+              min="20"
+              max="100"
+              value={eps}
+              step="1"
+              onChange={(e) => setEps(+e.target.value)}
+              style={{ marginLeft: 10 }}
+            />
+          </label>
+
+          <label style={{ fontSize: 13, color: "#334155" }}>
+            minPts: {minPts}
+            <input
+              type="range"
+              min="2"
+              max="10"
+              value={minPts}
+              step="1"
+              onChange={(e) => setMinPts(+e.target.value)}
+              style={{ marginLeft: 10 }}
+            />
+          </label>
+        </div>
+      )}
     </div>
   );
 }
-
 
 function LiveClusteringPage({ profession, eps, setEps, minPts, setMinPts }) {
   return (
