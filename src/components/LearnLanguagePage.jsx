@@ -1,8 +1,12 @@
-
-
 export default function LearnLanguagePage({ profession }) {
   const translations = {
     "Real Estate": [
+      {
+        your: "Property Features",
+        tech: "Data Points",
+        explanation:
+          "Each property's characteristics — such as size, price, and location — used to determine similarities and differences.",
+      },
       {
         your: "Neighborhood",
         tech: "Cluster",
@@ -26,12 +30,6 @@ export default function LearnLanguagePage({ profession }) {
         tech: "Outlier",
         explanation:
           "A one-of-a-kind property — like a luxury penthouse or distressed home — that doesn’t belong to any neighborhood.",
-      },
-      {
-        your: "Property Features",
-        tech: "Data Points",
-        explanation:
-          "Each property’s characteristics — such as size, price, and location — used to determine similarities and differences.",
       },
       {
         your: "Market Segment",
