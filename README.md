@@ -1,4 +1,4 @@
-# 📌 DBSCAN Interactive Visualization Web App
+# 📌 **DBSCAN Interactive Visualization Web App**
 
 An interactive educational web application designed to **explain the DBSCAN clustering algorithm** through intuitive visualizations, parameter controls, scenario comparisons, and real-time clustering.
 
@@ -10,30 +10,30 @@ This project helps learners understand:
 
 ---
 
-# 🚀 Features
+## 🚀 Features
 
-### ✅ **Welcome Page**
+### ✅ Welcome Page
 Introduces the learning flow and purpose.
 
-### ✅ **Interactive Tutorial Page**
+### ✅ Interactive Tutorial Page
 Guides the user step-by-step with visual elements.
 
-### ✅ **Learn Language Page**
+### ✅ Learn Language Page
 Explains DBSCAN-related terminology & core concepts.
 
-### ✅ **Live Clustering Page**
+### ✅ Live Clustering Page
 Interactive playground where users can:
 - Adjust `eps` and `minPts`
 - Visualize clusters forming live
 - Inspect noise points
 
-### ✅ **Compare Scenarios**
+### ✅ Compare Scenarios
 See how DBSCAN acts on:
 - Varying densities
 - Shape complexity
 - Different parameter sets
 
-### ✅ **Insights Page**
+### ✅ Insights Page
 Summarizes:
 - Strengths & weaknesses
 - Practical applications
@@ -41,7 +41,7 @@ Summarizes:
 
 ---
 
-# 🧠 Tech Stack
+## 🧠 Tech Stack
 
 | Technology | Purpose |
 |-----------|---------|
@@ -50,7 +50,7 @@ Summarizes:
 
 ---
 
-# 🛠️ Installation & Setup
+## 🛠️ Installation & Setup
 
 Make sure you have **Node.js** and **npm** installed.
 
@@ -73,4 +73,4 @@ npm run dev
 
 ---
 
-# 🖼️ UI Preview Screenshots
+## 🖼️ UI Preview Screenshots
