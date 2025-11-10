@@ -12,28 +12,38 @@ This project helps learners understand:
 
 ## 🚀 Features
 
-### ✅ Welcome Page
+### Welcome Page
 Introduces the learning flow and purpose.
 
-### ✅ Interactive Tutorial Page
-Guides the user step-by-step with visual elements.
+##
 
-### ✅ Learn Language Page
+### Learn Language Page
 Explains DBSCAN-related terminology & core concepts.
 
-### ✅ Live Clustering Page
+##
+
+### Interactive Tutorial Page
+Guides the user step-by-step with visual elements.
+
+##
+
+### Live Clustering Page
 Interactive playground where users can:
 - Adjust `eps` and `minPts`
 - Visualize clusters forming live
 - Inspect noise points
 
-### ✅ Compare Scenarios
+##
+
+### Compare Scenarios
 See how DBSCAN acts on:
 - Varying densities
 - Shape complexity
 - Different parameter sets
 
-### ✅ Insights Page
+##
+
+### Insights Page
 Summarizes:
 - Strengths & weaknesses
 - Practical applications
