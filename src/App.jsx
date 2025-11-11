@@ -9,7 +9,7 @@ import {
   FileText,
   Home,
 } from "lucide-react";
-import { InteractiveTutorialPage, WelcomePage, LearnLanguagePage, LiveClusteringPage} from "./components/export.js";
+import { InteractiveTutorialPage, WelcomePage, LearnLanguagePage, LiveClusteringPage, CompareScenarios, InsightsPage} from "./components/export.js";
 
 /* ---------- MAIN DASHBOARD COMPONENT ---------- */
 export default function DBSCANProfessionalDashboard() {
