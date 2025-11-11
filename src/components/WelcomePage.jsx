@@ -16,6 +16,7 @@ export default function WelcomePage({ profession, setProfession, setCurrentPage 
 
   return (
     <div style={{ textAlign: "center", maxWidth: 900, margin: "0 auto" }}>
+      <h1 style={{ fontSize: 50, color: "#1e293b", marginBottom: 16 }}>DBSCAN Visualization</h1>
       <h2 style={{ fontSize: 36, color: "#1e293b", marginBottom: 16 }}>
         Welcome! Let's speak your language.
       </h2>

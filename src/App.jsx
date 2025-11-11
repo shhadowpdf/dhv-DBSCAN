@@ -1,4 +1,4 @@
-import {useState } from "react";
+import { useState } from "react";
 import {
   ChevronRight,
   ChevronLeft,
@@ -197,6 +197,3 @@ export default function DBSCANProfessionalDashboard() {
 }
 
 /* ---------- PAGE COMPONENTS ---------- */
-
-
-
