@@ -8,22 +8,28 @@ export default function LearnLanguagePage({ profession }) {
           "Each property's characteristics — such as size, price, and location — used to determine similarities and differences.",
       },
       {
+        your: "Walking Distance",
+        tech: "Epsilon (ε)",
+        explanation:
+        "The limit for how far apart two properties can be in price or size to still be considered 'close neighbors'.",
+      },
+      {
+        your: "Minimum Community Size",
+        tech: "Minimum Points",
+        explanation:
+        "The smallest number of nearby properties required to recognize an area as a valid neighborhood.",
+      },
+      {
+        your: "Market Segment",
+        tech: "Dense Region",
+        explanation:
+        "A concentrated zone where many similar properties exist — showing strong demand or common pricing trends.",
+      },
+      {
         your: "Neighborhood",
         tech: "Cluster",
         explanation:
           "A natural group of properties that share similar price ranges and features — forming a clear community in the housing market.",
-      },
-      {
-        your: "Walking Distance",
-        tech: "Epsilon (ε)",
-        explanation:
-          "The limit for how far apart two properties can be in price or size to still be considered 'close neighbors'.",
-      },
-      {
-        your: "Minimum Community Size",
-        tech: "MinPts",
-        explanation:
-          "The smallest number of nearby properties required to recognize an area as a valid neighborhood.",
       },
       {
         your: "Unique Listing",
@@ -31,20 +37,14 @@ export default function LearnLanguagePage({ profession }) {
         explanation:
           "A one-of-a-kind property — like a luxury penthouse or distressed home — that doesn’t belong to any neighborhood.",
       },
-      {
-        your: "Market Segment",
-        tech: "Dense Region",
-        explanation:
-          "A concentrated zone where many similar properties exist — showing strong demand or common pricing trends.",
-      },
     ],
 
     Law: [
       {
-        your: "Case Category",
-        tech: "Cluster",
+        your: "Case Characteristics",
+        tech: "Data Points",
         explanation:
-          "A group of legal cases that share similar facts, charges, or outcomes — like fraud, theft, or contract disputes.",
+          "The measurable aspects of each case — like duration, severity, evidence type, or judgment complexity.",
       },
       {
         your: "Similar Circumstances",
@@ -54,21 +54,9 @@ export default function LearnLanguagePage({ profession }) {
       },
       {
         your: "Minimum Precedent Count",
-        tech: "MinPts",
+        tech: "Minimum Points",
         explanation:
           "The minimum number of similar cases required before a legal pattern or precedent can be established.",
-      },
-      {
-        your: "Landmark Case",
-        tech: "Outlier",
-        explanation:
-          "A rare or exceptional case that stands apart — often setting new legal standards or challenging existing ones.",
-      },
-      {
-        your: "Case Characteristics",
-        tech: "Data Points",
-        explanation:
-          "The measurable aspects of each case — like duration, severity, evidence type, or judgment complexity.",
       },
       {
         your: "Common Case Type",
@@ -76,14 +64,26 @@ export default function LearnLanguagePage({ profession }) {
         explanation:
           "An area in the legal landscape where many similar cases gather — showing recurring legal trends or issues.",
       },
+      {
+        your: "Case Category",
+        tech: "Cluster",
+        explanation:
+          "A group of legal cases that share similar facts, charges, or outcomes — like fraud, theft, or contract disputes.",
+      },
+      {
+        your: "Landmark Case",
+        tech: "Outlier",
+        explanation:
+          "A rare or exceptional case that stands apart — often setting new legal standards or challenging existing ones.",
+      },
     ],
 
     Journalism: [
       {
-        your: "Story Beat",
-        tech: "Cluster",
+        your: "Article Metrics",
+        tech: "Data Points",
         explanation:
-          "A collection of related news stories that revolve around the same theme, issue, or ongoing event — like climate change or election coverage.",
+          "Quantifiable aspects of each story — such as length, audience reach, tone, and topic — used to measure similarity and impact.",
       },
       {
         your: "Topic Similarity",
@@ -93,27 +93,27 @@ export default function LearnLanguagePage({ profession }) {
       },
       {
         your: "Minimum Coverage",
-        tech: "MinPts",
+        tech: "Minimum Points",
         explanation:
           "The smallest number of related articles required before a topic is recognized as a consistent news beat.",
-      },
-      {
-        your: "Breaking Investigation",
-        tech: "Outlier",
-        explanation:
-          "A standout, one-of-a-kind story — an exclusive scoop or groundbreaking report that doesn’t align with regular coverage.",
-      },
-      {
-        your: "Article Metrics",
-        tech: "Data Points",
-        explanation:
-          "Quantifiable aspects of each story — such as length, audience reach, tone, and topic — used to measure similarity and impact.",
       },
       {
         your: "Trending Topic",
         tech: "Dense Region",
         explanation:
           "A hotspot of media activity where many stories focus on the same subject — signaling a rising trend or public interest.",
+      },
+      {
+        your: "Story Beat",
+        tech: "Cluster",
+        explanation:
+          "A collection of related news stories that revolve around the same theme, issue, or ongoing event — like climate change or election coverage.",
+      },
+      {
+        your: "Breaking Investigation",
+        tech: "Outlier",
+        explanation:
+          "A standout, one-of-a-kind story — an exclusive scoop or groundbreaking report that doesn’t align with regular coverage.",
       },
     ],
   };

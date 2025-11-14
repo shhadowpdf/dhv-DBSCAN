@@ -9,7 +9,7 @@ export default function InteractiveTutorialPage({
     "Real Estate": [
       {
         title: "Step 1: Your Data",
-        desc: "Each dot represents a property — with its size (sqft) on the X-axis and price ($) on the Y-axis. Together, they form your housing market landscape.",
+        desc: "Each dot represents a property — with its size (sqft) on the X-axis and price (₹) on the Y-axis. Together, they form your housing market landscape.",
       },
       {
         title: "Step 2: Set Walking Distance",
@@ -17,7 +17,7 @@ export default function InteractiveTutorialPage({
       },
       {
         title: "Step 3: Minimum Neighborhood",
-        desc: "Set how many similar properties (minPts) are needed nearby to form a valid neighborhood. Fewer points = smaller clusters; more points = stronger grouping.",
+        desc: "Set how many similar properties (minum points) are needed nearby to form a valid neighborhood. Fewer points = smaller clusters; more points = stronger grouping.",
       },
       {
         title: "Step 4: Find Neighborhoods",

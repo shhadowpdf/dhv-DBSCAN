@@ -103,13 +103,13 @@ function ScenarioVisualization({ scenario, profession }) {
       return `${pt.id}\n${pt.x.toFixed(0)} days\nComplexity ${pt.y.toFixed(1)}\n${label}`;
     return `${pt.id}\n${pt.x.toFixed(0)} words\n${pt.y.toFixed(1)}% engagement\n${label}`;
   };
-
+  const raw = useMemo(() => makeRealisticDataset(profession), []);  
   useEffect(() => {
     const W = 460, H = 400;
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const raw = makeRealisticDataset(profession);
+    
     const norm = normalizeDataset(raw);
 
     // 🧮 Adaptive eps scaling
@@ -238,9 +238,9 @@ function ScenarioVisualization({ scenario, profession }) {
   }, [scenario, profession]);
 
   return (
-    <div style={{ position: "relative" }}>
-      <svg ref={svgRef} width={460} height={400} style={{ display: "block", borderRadius: "12px" }} />
-      <div style={{ marginTop: 8, fontSize: 12, color: "#64748b", textAlign: "center" }}>
+    <div className="relative">
+      <svg ref={svgRef} width={460} height={400} className="block rounded-xl" />
+      <div className="mt-2 text-xs text-slate-500 text-center">
         💡 Hover over points for realistic {profession.toLowerCase()} details
       </div>
     </div>
@@ -383,15 +383,15 @@ export default function CompareScenarios({ profession }) {
     : current[selectedScenario];
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <h2 style={{ fontSize: 32, color: "#1e293b", marginBottom: 16, textAlign: "center" }}>
+    <div className="max-w-7xl mx-auto">
+      <h2 className="text-4xl text-slate-800 mb-4 text-center">
         Compare Scenarios: Find Your Sweet Spot
       </h2>
-      <p style={{ fontSize: 16, color: "#475569", marginBottom: 40, textAlign: "center", lineHeight: 1.6 }}>
+      <p className="text-lg text-slate-600 mb-10 text-center leading-relaxed">
         Different situations need different settings. See how three approaches compare for your work.
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 40 }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {current.map((scenario, idx) => (
           <button
             key={idx}
@@ -399,34 +399,29 @@ export default function CompareScenarios({ profession }) {
               setSelectedScenario(idx);
               setUseCustom(false);
             }}
-            style={{
-              padding: 0,
-              border: selectedScenario === idx && !useCustom ? "3px solid #667eea" : "2px solid #e2e8f0",
-              background: "white",
-              borderRadius: 16,
-              cursor: "pointer",
-              transition: "all 0.3s",
-              boxShadow: selectedScenario === idx && !useCustom ? "0 12px 30px rgba(102,126,234,0.25)" : "0 4px 12px rgba(0,0,0,0.06)",
-              transform: selectedScenario === idx && !useCustom ? "translateY(-4px)" : "none"
-            }}
+            className={`p-0 border-2 bg-white rounded-xl cursor-pointer transition-all duration-300 ${
+              selectedScenario === idx && !useCustom
+                ? 'border-blue-500 shadow-2xl shadow-blue-500/25 -translate-y-1'
+                : 'border-slate-200 shadow-md'
+            } hover:shadow-lg`}
           >
-            <div style={{ padding: 24, textAlign: "center" }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>{scenario.emoji}</div>
-              <h3 style={{ fontSize: 20, fontWeight: 700, color: "#1e293b", marginBottom: 8 }}>{scenario.title}</h3>
-              <p style={{ fontSize: 14, color: "#64748b", marginBottom: 16, lineHeight: 1.5 }}>{scenario.desc}</p>
-              
-              <div style={{ display: "flex", justifyContent: "space-around", padding: "12px 0", background: "#f8fafc", borderRadius: 8, marginBottom: 12 }}>
+            <div className="p-6 text-center">
+              <div className="text-5xl mb-3">{scenario.emoji}</div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">{scenario.title}</h3>
+              <p className="text-sm text-slate-500 mb-4 leading-relaxed">{scenario.desc}</p>
+
+              <div className="flex justify-around py-3 bg-slate-50 rounded-lg mb-3">
                 <div>
-                  <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>Distance</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#667eea" }}>{scenario.eps}</div>
+                  <div className="text-xs text-slate-500 mb-1">Distance</div>
+                  <div className="text-lg font-bold text-blue-600">{scenario.eps}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 11, color: "#64748b", marginBottom: 4 }}>Min Size</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#667eea" }}>{scenario.minPts}</div>
+                  <div className="text-xs text-slate-500 mb-1">Min Size</div>
+                  <div className="text-lg font-bold text-blue-600">{scenario.minPts}</div>
                 </div>
               </div>
-              
-              <p style={{ fontSize: 12, color: "#475569", lineHeight: 1.4, fontStyle: "italic", margin: 0 }}>
+
+              <p className="text-xs text-slate-600 leading-relaxed italic m-0">
                 {scenario.preset}
               </p>
             </div>
@@ -434,158 +429,37 @@ export default function CompareScenarios({ profession }) {
         ))}
       </div>
 
-      <div style={{ background: "white", border: "2px solid #e0e7ff", borderRadius: 16, padding: 32 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h3 style={{ fontSize: 24, color: "#667eea", margin: 0 }}>
+      <div className="bg-white border-2 border-indigo-200 rounded-xl p-8">
+        <div className="flex justify-between items-center mb-5">
+          <h3 className="text-2xl text-blue-600 m-0">
             {activeScenario.emoji} {activeScenario.title}
           </h3>
-          <div style={{ display: "flex", gap: 12 }}>
+          <div className="flex gap-3">
             <button
-              onClick={() => setShowFAQ(!showFAQ)}
-              style={{
-                padding: "10px 20px",
-                border: "2px solid #10b981",
-                background: showFAQ ? "#10b981" : "white",
-                color: showFAQ ? "white" : "#10b981",
-                borderRadius: 8,
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: 14,
-                transition: "all 0.2s"
-              }}
+              onClick={() => setUseCustom(!useCustom)}
+              className={`px-5 py-2.5 border-2 rounded-lg cursor-pointer font-semibold text-sm transition-all duration-200 ${
+                useCustom
+                  ? 'border-purple-600 bg-purple-600 text-white'
+                  : 'border-purple-600 bg-white text-purple-600 hover:bg-purple-600 hover:text-white'
+              }`}
             >
-              ❓ FAQ
-            </button>
-            <button
-              onClick={() => setShowLimitations(!showLimitations)}
-              style={{
-                padding: "10px 20px",
-                border: "2px solid #f59e0b",
-                background: showLimitations ? "#f59e0b" : "white",
-                color: showLimitations ? "white" : "#f59e0b",
-                borderRadius: 8,
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: 14,
-                transition: "all 0.2s"
-              }}
-            >
-              ⚠️ Important Notes
+              ⚙️ Use Custom
             </button>
             <button
               onClick={exportToCSV}
-              style={{
-                padding: "10px 20px",
-                border: "2px solid #667eea",
-                background: "white",
-                color: "#667eea",
-                borderRadius: 8,
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: 14,
-                transition: "all 0.2s"
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = "#667eea";
-                e.target.style.color = "white";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = "white";
-                e.target.style.color = "#667eea";
-              }}
+              className="px-5 py-2.5 border-2 border-blue-600 bg-white text-blue-600 rounded-lg cursor-pointer font-semibold text-sm transition-all duration-200 hover:bg-blue-600 hover:text-white"
             >
               📥 Export CSV
             </button>
           </div>
         </div>
-
-        {showFAQ && (
-          <div style={{ background: "#f0fdf4", border: "2px solid #10b981", borderRadius: 12, padding: 24, marginBottom: 20 }}>
-            <h4 style={{ fontSize: 18, fontWeight: 700, color: "#065f46", marginBottom: 16 }}>❓ Quick FAQ</h4>
-            <div style={{ display: "grid", gap: 16 }}>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#047857", marginBottom: 6 }}>Q: What is a cluster?</p>
-                <p style={{ fontSize: 14, color: "#065f46", margin: 0, lineHeight: 1.6 }}>
-                  A: A cluster is a small group of things that are similar—like {profession === "Real Estate" ? "houses with similar size & price" : profession === "Law" ? "cases of similar length & severity" : "articles with similar topics & engagement"}.
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#047857", marginBottom: 6 }}>Q: Why change settings?</p>
-                <p style={{ fontSize: 14, color: "#065f46", margin: 0, lineHeight: 1.6 }}>
-                  A: Because sometimes you want a broad overview, other times only exact matches—settings control that. Think of it like adjusting binoculars: zoom in for detail, zoom out for the big picture.
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: 14, fontWeight: 700, color: "#047857", marginBottom: 6 }}>Q: What to do with outliers?</p>
-                <p style={{ fontSize: 14, color: "#065f46", margin: 0, lineHeight: 1.6 }}>
-                  A: Investigate—they might be {profession === "Real Estate" ? "special investment opportunities or data entry errors" : profession === "Law" ? "landmark cases needing senior attention or filing mistakes" : "viral stories worth featuring or content gaps to fill"}.
-                </p>
-              </div>
-            </div>
+        {(useCustom) && <div className="bg-slate-50 border-2 border-indigo-200 rounded-xl p-5 mb-6">
+          <div className="flex justify-between items-center mb-4">
+            <h4 className="text-lg font-bold text-slate-800 m-0">⚙️ Custom Settings</h4>
           </div>
-        )}
-
-        {showLimitations && (
-          <div style={{ background: "#fef3c7", border: "2px solid #f59e0b", borderRadius: 12, padding: 24, marginBottom: 20 }}>
-            <h4 style={{ fontSize: 18, fontWeight: 700, color: "#92400e", marginBottom: 16 }}>⚠️ Important Notes for Stakeholders</h4>
-            <div style={{ display: "grid", gap: 14 }}>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>🎛️</span>
-                <div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginBottom: 4 }}>Settings Matter</p>
-                  <p style={{ fontSize: 13, color: "#92400e", margin: 0, lineHeight: 1.5 }}>
-                    Results change significantly with Distance (ε) and Min Size settings. There's no one-size-fits-all—you'll need to experiment to find what works for your data.
-                  </p>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>📊</span>
-                <div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginBottom: 4 }}>Features You Choose Matter Hugely</p>
-                  <p style={{ fontSize: 13, color: "#92400e", margin: 0, lineHeight: 1.5 }}>
-                    If you pick {profession === "Real Estate" ? "price and area" : profession === "Law" ? "duration and complexity" : "word count and engagement"}, clusters will reflect only those features. Other characteristics (like {profession === "Real Estate" ? "location or age" : profession === "Law" ? "court type or outcome" : "author or publication date"}) won't be considered.
-                  </p>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>⚖️</span>
-                <div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginBottom: 4 }}>Data Must Be Normalized</p>
-                  <p style={{ fontSize: 13, color: "#92400e", margin: 0, lineHeight: 1.5 }}>
-                    For real-world data, you need to scale features to similar ranges. Otherwise, {profession === "Real Estate" ? "price in lakhs (50-200) will dominate over bedrooms (1-5)" : profession === "Law" ? "days (10-500) will dominate over complexity scores (1-10)" : "word count (300-5000) will dominate over engagement % (10-100)"}.
-                  </p>
-                </div>
-              </div>
-              <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <span style={{ fontSize: 20, flexShrink: 0 }}>🧪</span>
-                <div>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: "#78350f", marginBottom: 4 }}>This is a Demo</p>
-                  <p style={{ fontSize: 13, color: "#92400e", margin: 0, lineHeight: 1.5 }}>
-                    These visualizations use small synthetic datasets to show the concept. For production use, you'll need properly cleaned real data with appropriate preprocessing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div style={{ background: "#f8fafc", border: "2px solid #e0e7ff", borderRadius: 12, padding: 20, marginBottom: 24 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <h4 style={{ fontSize: 16, fontWeight: 700, color: "#1e293b", margin: 0 }}>⚙️ Custom Settings</h4>
-            <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
-              <input 
-                type="checkbox" 
-                checked={useCustom}
-                onChange={(e) => setUseCustom(e.target.checked)}
-                style={{ width: 18, height: 18, cursor: "pointer" }}
-              />
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#475569" }}>Use Custom</span>
-            </label>
-          </div>
-          
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#475569", marginBottom: 8 }}>
+              <label className="block text-sm font-semibold text-slate-600 mb-2">
                 Distance (ε): {customEps.toFixed(1)}
               </label>
               <input
@@ -596,12 +470,12 @@ export default function CompareScenarios({ profession }) {
                 value={customEps}
                 onChange={(e) => setCustomEps(parseFloat(e.target.value))}
                 disabled={!useCustom}
-                style={{ width: "100%", cursor: useCustom ? "pointer" : "not-allowed", opacity: useCustom ? 1 : 0.5 }}
+                className={`w-full ${useCustom ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-50'}`}
               />
-              <p style={{ fontSize: 11, color: "#64748b", margin: "4px 0 0 0" }}>How close items must be to group</p>
+              <p className="text-xs text-slate-500 mt-1">How close items must be to group</p>
             </div>
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#475569", marginBottom: 8 }}>
+              <label className="block text-sm font-semibold text-slate-600 mb-2">
                 Min Size: {customMinPts}
               </label>
               <input
@@ -612,34 +486,34 @@ export default function CompareScenarios({ profession }) {
                 value={customMinPts}
                 onChange={(e) => setCustomMinPts(parseInt(e.target.value))}
                 disabled={!useCustom}
-                style={{ width: "100%", cursor: useCustom ? "pointer" : "not-allowed", opacity: useCustom ? 1 : 0.5 }}
+                className={`w-full ${useCustom ? 'cursor-pointer opacity-100' : 'cursor-not-allowed opacity-50'}`}
               />
-              <p style={{ fontSize: 11, color: "#64748b", margin: "4px 0 0 0" }}>Minimum items to form a group</p>
+              <p className="text-xs text-slate-500 mt-1">Minimum items to form a group</p>
             </div>
           </div>
-        </div>
+        </div>}
         
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <ScenarioVisualization scenario={activeScenario} profession={profession} />
-          
+
           <div>
             {!useCustom && (
               <>
-                <div style={{ background: "#f0f9ff", borderRadius: 12, padding: 20, marginBottom: 16 }}>
-                  <h4 style={{ fontSize: 16, fontWeight: 700, color: "#0369a1", marginBottom: 12 }}>✅ Best For</h4>
-                  <p style={{ fontSize: 14, color: "#075985", lineHeight: 1.6, margin: 0 }}>{current[selectedScenario].useCase}</p>
+                <div className="bg-blue-50 rounded-xl p-5 mb-4">
+                  <h4 className="text-lg font-bold text-blue-800 mb-3">✅ Best For</h4>
+                  <p className="text-sm text-blue-700 leading-relaxed m-0">{current[selectedScenario].useCase}</p>
                 </div>
-                
+
                 {current[selectedScenario].warning && (
-                  <div style={{ background: "#fef3c7", borderRadius: 12, padding: 20, marginBottom: 16 }}>
-                    <h4 style={{ fontSize: 16, fontWeight: 700, color: "#92400e", marginBottom: 12 }}>⚠️ Watch Out</h4>
-                    <p style={{ fontSize: 14, color: "#78350f", lineHeight: 1.6, margin: 0 }}>{current[selectedScenario].warning}</p>
+                  <div className="bg-yellow-50 rounded-xl p-5 mb-4">
+                    <h4 className="text-lg font-bold text-yellow-800 mb-3">⚠️ Watch Out</h4>
+                    <p className="text-sm text-yellow-700 leading-relaxed m-0">{current[selectedScenario].warning}</p>
                   </div>
                 )}
 
-                <div style={{ padding: 20, background: "#f8fafc", borderRadius: 12 }}>
-                  <h4 style={{ fontSize: 14, fontWeight: 700, color: "#475569", marginBottom: 12 }}>💡 Pro Tip</h4>
-                  <p style={{ fontSize: 13, color: "#64748b", lineHeight: 1.6, margin: 0 }}>
+                <div className="p-5 bg-slate-50 rounded-xl">
+                  <h4 className="text-sm font-bold text-slate-600 mb-3">💡 Pro Tip</h4>
+                  <p className="text-xs text-slate-500 leading-relaxed m-0">
                     {selectedScenario === 0 && "Start here for exploration, then tighten settings as you learn your data."}
                     {selectedScenario === 1 && "This is your daily driver—works for 80% of situations."}
                     {selectedScenario === 2 && "Use when precision matters more than coverage."}
@@ -647,16 +521,16 @@ export default function CompareScenarios({ profession }) {
                 </div>
               </>
             )}
-            
+
             {useCustom && (
-              <div style={{ background: "#f0f9ff", borderRadius: 12, padding: 20 }}>
-                <h4 style={{ fontSize: 16, fontWeight: 700, color: "#0369a1", marginBottom: 12 }}>🎯 Experiment Mode</h4>
-                <p style={{ fontSize: 14, color: "#075985", lineHeight: 1.6, marginBottom: 16 }}>
+              <div className="bg-blue-50 rounded-xl p-5">
+                <h4 className="text-lg font-bold text-blue-800 mb-3">🎯 Experiment Mode</h4>
+                <p className="text-sm text-blue-700 leading-relaxed mb-4">
                   Try different combinations and see how clusters change in real-time. This is how you find the perfect settings for your specific data.
                 </p>
-                <div style={{ background: "white", borderRadius: 8, padding: 16 }}>
-                  <p style={{ fontSize: 13, fontWeight: 700, color: "#1e293b", marginBottom: 8 }}>🔍 What to look for:</p>
-                  <ul style={{ fontSize: 13, color: "#475569", margin: 0, paddingLeft: 20, lineHeight: 1.8 }}>
+                <div className="bg-white rounded-lg p-4">
+                  <p className="text-xs font-bold text-slate-800 mb-2">🔍 What to look for:</p>
+                  <ul className="text-xs text-slate-600 m-0 pl-5 leading-relaxed">
                     <li>Too many outliers? Decrease Distance or Min Size</li>
                     <li>Too few groups? Increase Distance or decrease Min Size</li>
                     <li>Groups too mixed? Decrease Distance</li>
@@ -666,41 +540,106 @@ export default function CompareScenarios({ profession }) {
               </div>
             )}
           </div>
-        </div>
-      </div>
 
-      <div style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", borderRadius: 16, padding: 32, color: "white" }}>
-        <h3 style={{ fontSize: 24, fontWeight: 700, marginBottom: 20, textAlign: "center" }}>🚀 Ready for More?</h3>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
-          <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: 20 }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>📊</div>
-            <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Use Your Own Data</h4>
-            <p style={{ fontSize: 13, margin: 0, opacity: 0.95, lineHeight: 1.5 }}>
-              Upload your CSV and map columns to cluster on real {profession === "Real Estate" ? "properties" : profession === "Law" ? "cases" : "articles"}
-            </p>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: 20 }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>🌐</div>
-            <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Advanced Clustering</h4>
-            <p style={{ fontSize: 13, margin: 0, opacity: 0.95, lineHeight: 1.5 }}>
-              For complex data (text, many features), use HDBSCAN or dimensionality reduction + DBSCAN
-            </p>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: 20 }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>🎓</div>
-            <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Team Training</h4>
-            <p style={{ fontSize: 13, margin: 0, opacity: 0.95, lineHeight: 1.5 }}>
-              Share this tool with your team—visual learning beats technical manuals every time
-            </p>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.15)", borderRadius: 12, padding: 20 }}>
-            <div style={{ fontSize: 28, marginBottom: 8 }}>🌍</div>
-            <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>Multilingual Support</h4>
-            <p style={{ fontSize: 13, margin: 0, opacity: 0.95, lineHeight: 1.5 }}>
-              Need explanations in Hindi/Hinglish? Tutorials in regional languages coming soon
-            </p>
-          </div>
         </div>
+        <div className="flex justify-center gap-5 mb-6">
+          <button
+            onClick={() => {
+              setShowFAQ(!showFAQ);
+              setShowLimitations(false);
+            }}
+            className={`px-5 py-2.5 border-2 rounded-lg cursor-pointer font-semibold text-sm transition-all duration-200 ${
+              showFAQ
+                ? 'border-green-500 bg-green-500 text-white'
+                : 'border-green-500 bg-white text-green-500 hover:bg-green-500 hover:text-white'
+            }`}
+          >
+            ❓ FAQ
+          </button>
+          <button
+            onClick={() => {
+              setShowLimitations(!showLimitations);
+              setShowFAQ(false);
+            }}
+            className={`px-5 py-2.5 border-2 rounded-lg cursor-pointer font-semibold text-sm transition-all duration-200 ${
+              showLimitations
+                ? 'border-yellow-500 bg-yellow-500 text-white'
+                : 'border-yellow-500 bg-white text-yellow-500 hover:bg-yellow-500 hover:text-white'
+            }`}
+          >
+            ⚠️ Important Notes
+          </button>
+        </div>
+
+        {showFAQ && (
+          <div className="bg-green-50 border-2 border-green-500 rounded-xl p-6 mb-5">
+            <h4 className="text-xl font-bold text-green-800 mb-4">❓ Quick FAQ</h4>
+            <div className="grid gap-4">
+              <div>
+                <p className="text-sm font-bold text-green-700 mb-1.5">Q: What is a cluster?</p>
+                <p className="text-sm text-green-700 leading-relaxed m-0">
+                  A: A cluster is a small group of things that are similar—like {profession === "Real Estate" ? "houses with similar size & price" : profession === "Law" ? "cases of similar length & severity" : "articles with similar topics & engagement"}.
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-green-700 mb-1.5">Q: Why change settings?</p>
+                <p className="text-sm text-green-700 leading-relaxed m-0">
+                  A: Because sometimes you want a broad overview, other times only exact matches—settings control that. Think of it like adjusting binoculars: zoom in for detail, zoom out for the big picture.
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-bold text-green-700 mb-1.5">Q: What to do with outliers?</p>
+                <p className="text-sm text-green-700 leading-relaxed m-0">
+                  A: Investigate—they might be {profession === "Real Estate" ? "special investment opportunities or data entry errors" : profession === "Law" ? "landmark cases needing senior attention or filing mistakes" : "viral stories worth featuring or content gaps to fill"}.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showLimitations && (
+          <div className="bg-yellow-50 border-2 border-yellow-500 rounded-xl p-6 mb-5">
+            <h4 className="text-xl font-bold text-yellow-800 mb-4">⚠️ Important Notes for Stakeholders</h4>
+            <div className="grid gap-3.5">
+              <div className="flex gap-3 items-start">
+                <span className="text-xl flex-shrink-0">🎛️</span>
+                <div>
+                  <p className="text-sm font-bold text-yellow-700 mb-1">Settings Matter</p>
+                  <p className="text-xs text-yellow-700 leading-relaxed m-0">
+                    Results change significantly with Distance (ε) and Min Size settings. There's no one-size-fits-all—you'll need to experiment to find what works for your data.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-start">
+                <span className="text-xl flex-shrink-0">📊</span>
+                <div>
+                  <p className="text-sm font-bold text-yellow-700 mb-1">Features You Choose Matter Hugely</p>
+                  <p className="text-xs text-yellow-700 leading-relaxed m-0">
+                    If you pick {profession === "Real Estate" ? "price and area" : profession === "Law" ? "duration and complexity" : "word count and engagement"}, clusters will reflect only those features. Other characteristics (like {profession === "Real Estate" ? "location or age" : profession === "Law" ? "court type or outcome" : "author or publication date"}) won't be considered.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-start">
+                <span className="text-xl flex-shrink-0">⚖️</span>
+                <div>
+                  <p className="text-sm font-bold text-yellow-700 mb-1">Data Must Be Normalized</p>
+                  <p className="text-xs text-yellow-700 leading-relaxed m-0">
+                    For real-world data, you need to scale features to similar ranges. Otherwise, {profession === "Real Estate" ? "price in lakhs (50-200) will dominate over bedrooms (1-5)" : profession === "Law" ? "days (10-500) will dominate over complexity scores (1-10)" : "word count (300-5000) will dominate over engagement % (10-100)"}.
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3 items-start">
+                <span className="text-xl flex-shrink-0">🧪</span>
+                <div>
+                  <p className="text-sm font-bold text-yellow-700 mb-1">This is a Demo</p>
+                  <p className="text-xs text-yellow-700 leading-relaxed m-0">
+                    These visualizations use small synthetic datasets to show the concept. For production use, you'll need properly cleaned real data with appropriate preprocessing.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

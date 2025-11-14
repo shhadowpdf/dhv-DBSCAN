@@ -18,7 +18,7 @@ export default function InsightsPage({ profession }) {
           metrics: { 
             timeSaved: "2 hours → 15 minutes", 
             accuracy: "70% → 95%",
-            roi: "₹8.5L profit on 1 deal"
+            roi: "₹1.5L profit on 1 deal"
           },
           testimonial: "This changed how I hunt for deals. I used to rely on gut feeling—now I have data backing every decision."
         },
@@ -177,7 +177,7 @@ export default function InsightsPage({ profession }) {
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 20px" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
         * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
         
         .insights-hero {
@@ -372,8 +372,9 @@ export default function InsightsPage({ profession }) {
         
         .metric-value {
           font-size: 20px;
-          font-weight: 900;
+          font-weight: 700;
           color: #667eea;
+          font-family: 'Roboto', monospace;
         }
         
         .testimonial {
@@ -524,21 +525,6 @@ export default function InsightsPage({ profession }) {
           <h1 className="hero-title">{profession}</h1>
           <div className="hero-tagline">{current.tagline}</div>
           <p className="hero-context">{current.context}</p>
-          
-          <div className="stats-row">
-            <div className="stat-item">
-              <span className="stat-value">~75%</span>
-              <span className="stat-label">Time Saved</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">3x</span>
-              <span className="stat-label">Faster Decisions</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value">95%</span>
-              <span className="stat-label">Accuracy</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -596,21 +582,6 @@ export default function InsightsPage({ profession }) {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="cta-section">
-        <h2 className="cta-title">Ready to Try It Yourself?</h2>
-        <p className="cta-text">
-          See how clustering can transform your {profession.toLowerCase()} workflow in minutes, not months.
-        </p>
-        <div className="cta-buttons">
-          <button className="btn btn-primary" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            Start Live Demo
-          </button>
-          <button className="btn btn-secondary" onClick={() => alert('Export feature coming soon!')}>
-            Download Sample Data
-          </button>
-        </div>
       </div>
     </div>
   );

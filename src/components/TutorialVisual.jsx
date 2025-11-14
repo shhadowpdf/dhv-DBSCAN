@@ -1,30 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as d3 from "d3";
 /* ---------- datasets ---------- */
-function makeDataset(kind) {
-  if (kind === "Real Estate")
-    return [
-      ...makeCircle(24, 34, 6, 20, "RE-C1-"),
-      ...makeEllipse(62, 36, 10, 5, 22, "RE-E1-"),
-      ...makeCrescent(46, 76, 6, 12, 18, "RE-CR-"),
-      ...makeLine(72, 22, 90, 40, 2.2, 14, "RE-L1-"),
-      { id: "RE-OUT", x: 88, y: 12 },
-    ];
-  if (kind === "Law")
-    return [
-      ...makeCircle(20, 24, 5.5, 18, "LAW-C1-"),
-      ...makeLine(52, 18, 72, 36, 3, 16, "LAW-L1-"),
-      ...makeCrescent(50, 72, 6, 12, 18, "LAW-CR-"),
-      { id: "LAW-OUT1", x: 92, y: 88 },
-      { id: "LAW-OUT2", x: 6, y: 88 },
-    ];
-  return [
-    ...makeCircle(25, 62, 6, 18, "J-C1-"),
-    ...makeEllipse(62, 28, 8, 4, 18, "J-E1-"),
-    ...makeCrescent(68, 68, 6, 11, 16, "J-CR-"),
-    { id: "J-OUT", x: 8, y: 10 },
-  ];
-}
 
 /* ---------- DBSCAN ---------- */
 function dbscan(points, eps, minPts) {
@@ -111,20 +87,16 @@ function makeCrescent(cx, cy, r1, r2, n, prefix = "") {
 }
 
 export default function TutorialVisual({ step = 0, profession = "Journalism" }) {
-  const [epsCoord, setepsCoord] = useState(55); // tweak this if clusters look too merged/split
+  const [epsCoord, setepsCoord] = useState(55);
   const [minPts, setminPts] = useState(6);
   const svgRef = useRef(null);
 
-  // generate new random shapes *once per mount* (user chose option 1).
-  // useMemo with empty deps => runs only on mount (new shapes each page load)
   const { baseData, colors } = useMemo(() => {
-    // We'll create clusters within a 900 x 440 coordinate space but use smaller coordinates for shapes
     const c1 = makeCircle(220, 160, 64, 18, "C1-");
     const c2 = makeEllipse(560, 120, 100, 42, 20, "C2-");
     const c3 = makeCrescent(420, 300, 48, 84, 18, "C3-");
     const c4 = makeLine(160, 320, 320, 380, 18, 12, "C4-");
     const data = [...c1, ...c2, ...c3, ...c4];
-    // small chance to add a few noise points randomly scattered
     for (let i = 0; i < 6; i++) {
       if (Math.random() < 0.5)
         data.push({
@@ -144,7 +116,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         "#06b6d4",
       ],
     };
-  }, []); // empty => new random shapes on mount
+  }, []);
 
   useEffect(() => {
     const W = 900;
@@ -152,11 +124,9 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    // scales
     const xScale = d3.scaleLinear().domain([0, W]).range([0, W]);
-    const yScale = d3.scaleLinear().domain([0, H]).range([H, 0]); // inverted: higher y => up
+    const yScale = d3.scaleLinear().domain([0, H]).range([H, 0]);
 
-    // background
     svg
       .append("rect")
       .attr("width", W)
@@ -164,7 +134,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       .attr("rx", 14)
       .attr("fill", "#f8fafc");
 
-    // axis labels by profession
     let xLabel = "X-Axis",
       yLabel = "Y-Axis";
     if (profession === "Law") {
@@ -172,7 +141,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       yLabel = "Case Complexity Score";
     } else if (profession === "Real Estate") {
       xLabel = "Property Size (sqft)";
-      yLabel = "Property Price ($)";
+      yLabel = "Property Price (₹)";
     } else {
       xLabel = "Article Word Count";
       yLabel = "Engagement Score";
@@ -197,12 +166,9 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       .attr("fill", "#475569")
       .text(yLabel);
 
-    // compose data (clone base data so we don't mutate memoized array)
     const data = baseData.map((d) => ({ ...d }));
-    // if step >= 4, add a clear outlier
     if (step >= 4) data.push({ id: "OUT-1", x: 800, y: 70 });
 
-    // Tooltip
     const tooltip = d3
       .select("body")
       .append("div")
@@ -236,8 +202,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       )} — Y: ${d.y.toFixed(1)}`;
     }
 
-    // initial attributes and entrance animation
-    // store initial group centers to animate from
     const centers = [
       {
         x: d3.mean(baseData.slice(0, 18), (p) => p.x) || 120,
@@ -257,7 +221,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       },
     ];
 
-    // Draw points as groups so we can animate transform easily
     const group = svg
       .selectAll("g.pt")
       .data(data, (d) => d.id)
@@ -296,10 +259,8 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         tooltip.transition().duration(120).style("opacity", 0);
       });
 
-    // entrance animation: grow from a nearby center (gives "formation" feel)
     group.each(function (d, i) {
       const node = d3.select(this);
-      // choose a center based on original partitioning - not strict but provides a visual grouping origin
       const center = centers[i % centers.length];
       node.attr("transform", `translate(${center.x},${yScale(center.y)})`);
       const delay =
@@ -319,7 +280,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         .attr("r", 8);
     });
 
-    // Step 2: show epsilon around a sample point (screen coords)
     if (step === 2) {
       const example = data[Math.floor(data.length * 0.25)] || data[0];
       const epsR = 70;
@@ -355,22 +315,15 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         .attr("opacity", 1);
     }
 
-    // Step >= 3: run DBSCAN in data-space (eps must be in same units as coordinates)
-    // We'll choose eps relative to plot size; make it configurable later if needed.
     let labels = new Array(data.length).fill(-1);
     if (step >= 3) {
-      // convert eps to coordinate-space scale (these coordinates are already in pixel-like space between ~0..900)
       labels = dbscan(data, epsCoord, minPts);
-      // attach labels
       for (let i = 0; i < data.length; i++) data[i]._label = labels[i];
     } else {
-      // for steps < 3, mark undefined or original partition for friendly hover text
       for (let i = 0; i < data.length; i++) data[i]._label = undefined;
     }
 
-    // if step >=3, draw hulls per cluster and recolor points into cluster hues
     if (step >= 3) {
-      // group points by cluster label (except noise -1)
       const clusters = {};
       data.forEach((d, i) => {
         const l = labels[i];
@@ -384,7 +337,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         .sort((a, b) => a - b);
       clusterKeys.forEach((ck, idx) => {
         const pts = clusters[ck];
-        if (!pts || pts.length < 3) return; // need at least 3 for hull
+        if (!pts || pts.length < 3) return;
         const hullPoints = d3.polygonHull(
           pts.map((p) => [xScale(p.x), yScale(p.y)])
         );
@@ -414,7 +367,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
             path.transition().duration(900).attr("fill-opacity", 0.12)
           );
 
-        // centroid label
         const cx = d3.mean(pts, (p) => p.x);
         const cy = d3.mean(pts, (p) => p.y);
         svg
@@ -433,7 +385,6 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
           .attr("opacity", 1);
       });
 
-      // recolor points (animate)
       svg
         .selectAll("g.pt")
         .select("circle")
@@ -442,93 +393,77 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         .duration(700)
         .attr("fill", (d, i) => {
           const lab = d._label;
-          if (lab === -1 || lab === undefined) return "#94a3b8"; // noise or unassigned
+          if (lab === -1 || lab === undefined) return "#94a3b8";
           const idx = Object.keys(clusters).indexOf(String(lab));
           return colors[(idx === -1 ? lab : idx) % colors.length] ?? "#64748b";
         });
     }
-    let dx, dy;
-    // Step >=4: highlight outliers (both computed noise and explicit OUT-1)
+
     if (step >= 4) {
-      // computed outliers (label === -1)
-
       const noisePts = data.filter((d) => d._label === -1);
-      noisePts.forEach((n) => {
-        // draw a subtle halo
-        dx = xScale(n.x);
-        dy = yScale(n.y);
-        svg
-          .append("circle")
-          .attr("cx", xScale(n.x))
-          .attr("cy", yScale(n.y))
-          .attr("r", 10)
-          .attr("fill", "none")
-          .attr("stroke", "#fb7185")
-          .attr("stroke-width", 1.2)
-          .attr("opacity", 0.0)
-          .transition()
-          .duration(400)
-          .attr("opacity", 0.9)
-          .transition()
-          .duration(600)
-          .attr("opacity", 0.25)
-          .remove();
-      });
-
-      // explicit OUT-1 pulse (if present)
-      const out = data.find((d) => d.id === "OUT-1");
-      console.log(dx, dy);
-      if (out) {
+      
+      noisePts.forEach((n, idx) => {
+        const nx = xScale(n.x);
+        const ny = yScale(n.y);
+        
         const pulse = svg
           .append("circle")
-          .attr("cx", dx)
-          .attr("cy", dy)
+          .attr("cx", nx)
+          .attr("cy", ny)
           .attr("r", 10)
           .attr("fill", "none")
           .attr("stroke", "#f97316")
           .attr("stroke-width", 2)
-          .attr("opacity", 0.95);
-        (function repeat() {
-          pulse
-            .attr("r", 10)
-            .attr("opacity", 0.95)
-            .transition()
-            .duration(900)
-            .attr("r", 32)
-            .attr("opacity", 0.12)
-            .transition()
-            .duration(900)
-            .attr("r", 12)
-            .attr("opacity", 0.9)
-            .on("end", repeat);
-        })();
+          .attr("opacity", 0);
+        
+        setTimeout(() => {
+          (function repeat() {
+            pulse
+              .attr("r", 10)
+              .attr("opacity", 0.95)
+              .transition()
+              .duration(900)
+              .attr("r", 28)
+              .attr("opacity", 0.15)
+              .transition()
+              .duration(900)
+              .attr("r", 10)
+              .attr("opacity", 0.9)
+              .on("end", repeat);
+          })();
+        }, idx * 150);
+        
         svg
           .append("circle")
-          .attr("cx", xScale(out.x))
-          .attr("cy", yScale(out.y))
-          .attr("r", 10)
+          .attr("cx", nx)
+          .attr("cy", ny)
+          .attr("r", 8)
           .attr("fill", "#f97316")
-          .attr("opacity", 0.85)
-          .transition()
-          .duration(700)
-          .attr("r", 12);
-        svg
-          .append("text")
-          .attr("x", xScale(out.x) + 18)
-          .attr("y", yScale(out.y) - 8)
-          .attr("font-size", 13)
-          .attr("font-weight", 700)
-          .attr("fill", "#475569")
           .attr("opacity", 0)
-          .text("Outlier — needs review")
           .transition()
-          .delay(400)
-          .duration(600)
-          .attr("opacity", 1);
-      }
+          .delay(idx * 150)
+          .duration(700)
+          .attr("opacity", 0.9)
+          .attr("r", 11);
+        
+        if (idx === 0) {
+          svg
+            .append("text")
+            .attr("x", nx + 18)
+            .attr("y", ny - 8)
+            .attr("font-size", 13)
+            .attr("font-weight", 700)
+            .attr("fill", "#475569")
+            .attr("opacity", 0)
+            .text("Outlier — needs review")
+            .transition()
+            .delay(400)
+            .duration(600)
+            .attr("opacity", 1);
+        }
+      });
     }
 
-    // small hint text
     svg
       .append("text")
       .attr("x", 18)
@@ -539,10 +474,9 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         "Hover points to see details — clusters discovered via DBSCAN at Step 3."
       );
 
-    // cleanup
     return () => {
       tooltip.remove();
-      svg.selectAll("*").interrupt(); // stop transitions
+      svg.selectAll("*").interrupt();
       svg.selectAll("*").remove();
     };
   }, [step, profession, baseData, colors, epsCoord, minPts]);
@@ -561,7 +495,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
           background: "transparent",
         }}
       />
-      {3 <= step && step != 4 && (
+      {3 <= step && step !== 4 && (
         <div
           style={{
             marginTop: 20,
