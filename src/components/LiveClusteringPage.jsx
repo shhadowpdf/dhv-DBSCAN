@@ -344,321 +344,78 @@ function LiveClusteringPage() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'white',
-      padding: '20px',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
-      <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto'
-      }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '20px' }}>
-          {/* Main Canvas */}
-          <div style={{
-            background: 'white',
-            borderRadius: '16px',
-            padding: '20px',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-          }}>
+    <div className="min-h-screen bg-white p-5">
+      <div className="max-w-[1400px] mx-auto">
+        <div className="grid gap-5" style={{ gridTemplateColumns: '1fr 350px' }}>
+          <div className="bg-white rounded-2xl p-5 shadow-2xl">
             <canvas
               ref={canvasRef}
               width={800}
               height={600}
               onClick={handleCanvasClick}
-              style={{
-                border: '2px solid #E2E8F0',
-                borderRadius: '12px',
-                cursor: isAnimating ? 'not-allowed' : 'crosshair',
-                display: 'block',
-                width: '100%',
-                height: 'auto'
-              }}
+              className={`border-2 border-slate-200 rounded-xl block w-full h-auto ${isAnimating?'cursor-not-allowed':'cursor-crosshair'}`}
             />
-
-            {/* Controls */}
-            <div style={{
-              marginTop: '20px',
-              display: 'flex',
-              gap: '10px',
-              flexWrap: 'wrap',
-              alignItems: 'center'
-            }}>
+            <div className="mt-5 flex flex-wrap gap-3 items-center">
               <button
                 onClick={toggleAnimation}
-                style={{
-                  padding: '12px 24px',
-                  background: isAnimating ? '#F56565' : '#48BB78',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                className={`cursor-pointer px-6 py-3 rounded-lg font-light text-white flex items-center gap-2 transition ${isAnimating?'bg-red-500 hover:bg-red-600':'bg-green-500 hover:bg-green-600'}`}
               >
                 {isAnimating ? <Pause size={20} /> : <Play size={20} />}
                 {isAnimating ? 'Pause' : 'Start Clustering'}
               </button>
-
               <button
                 onClick={resetClustering}
                 disabled={isAnimating}
-                style={{
-                  padding: '12px 24px',
-                  background: isAnimating ? '#CBD5E0' : '#667eea',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: isAnimating ? 'not-allowed' : 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={e => !isAnimating && (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                className={`cursor-pointer px-6 py-3 rounded-lg font-light flex items-center gap-2 text-white transition ${isAnimating?'bg-slate-300 cursor-not-allowed':'bg-indigo-500 hover:bg-indigo-600'}`}
               >
                 <RotateCcw size={20} />
                 Reset
               </button>
-
               <button
                 onClick={generateRandomPoints}
                 disabled={isAnimating}
-                style={{
-                  padding: '12px 24px',
-                  background: isAnimating ? '#CBD5E0' : '#ED8936',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: isAnimating ? 'not-allowed' : 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s'
-                }}
-                onMouseOver={e => !isAnimating && (e.currentTarget.style.transform = 'scale(1.05)')}
-                onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+                className={`cursor-pointer px-6 py-3 rounded-lg font-light text-white transition ${isAnimating?'bg-slate-300 cursor-not-allowed':'bg-orange-500 hover:bg-orange-600'}`}
               >
                 New Random Data
               </button>
             </div>
           </div>
-
-          {/* Sidebar */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Parameters */}
-            <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '20px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-            }}>
-              <h3 style={{ margin: '0 0 20px 0', color: '#2D3748' }}>Parameters</h3>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  color: '#4A5568',
-                  fontWeight: '600'
-                }}>
-                  Epsilon (ε): {epsilon}px
-                </label>
-                <input
-                  type="range"
-                  min="20"
-                  max="100"
-                  value={epsilon}
-                  onChange={(e) => {
-                    setEpsilon(Number(e.target.value));
-                    resetClustering();
-                  }}
-                  disabled={isAnimating}
-                  style={{ width: '100%' }}
-                />
-                <p style={{ fontSize: '12px', color: '#718096', margin: '5px 0 0 0' }}>
-                  Maximum distance between points in a cluster
-                </p>
+          <div className="flex flex-col gap-5">
+            <div className="bg-white rounded-2xl p-5 shadow-2xl">
+              <h3 className="text-slate-800 font-bold mb-5">Parameters</h3>
+              <div className="mb-5">
+                <label className="block mb-2 text-slate-600 font-semibold">Epsilon (ε): {epsilon}px</label>
+                <input type="range" min="20" max="100" value={epsilon} onChange={(e)=>{setEpsilon(Number(e.target.value));resetClustering();}} disabled={isAnimating} className="w-full accent-indigo-500" />
+                <p className="text-xs text-slate-500 mt-1">Maximum distance between points in a cluster</p>
               </div>
-
-              <div style={{ marginBottom: '20px' }}>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  color: '#4A5568',
-                  fontWeight: '600'
-                }}>
-                  MinPts: {minPts}
-                </label>
-                <input
-                  type="range"
-                  min="2"
-                  max="10"
-                  value={minPts}
-                  onChange={(e) => {
-                    setMinPts(Number(e.target.value));
-                    resetClustering();
-                  }}
-                  disabled={isAnimating}
-                  style={{ width: '100%' }}
-                />
-                <p style={{ fontSize: '12px', color: '#718096', margin: '5px 0 0 0' }}>
-                  Minimum points to form a dense region
-                </p>
+              <div className="mb-5">
+                <label className="block mb-2 text-slate-600 font-semibold">MinPts: {minPts}</label>
+                <input type="range" min="2" max="10" value={minPts} onChange={(e)=>{setMinPts(Number(e.target.value));resetClustering();}} disabled={isAnimating} className="w-full accent-indigo-500" />
+                <p className="text-xs text-slate-500 mt-1">Minimum points to form a dense region</p>
               </div>
-
               <div>
-                <label style={{
-                  display: 'block',
-                  marginBottom: '8px',
-                  color: '#4A5568',
-                  fontWeight: '600'
-                }}>
-                  Animation Speed
-                </label>
-                <input
-                  type="range"
-                  min="100"
-                  max="2000"
-                  value={animationSpeed}
-                  onChange={(e) => setAnimationSpeed(Number(e.target.value))}
-                  style={{ width: '100%' }}
-                />
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#718096' }}>
-                  <span>Slower</span>
-                  <span>Faster</span>
-                </div>
+                <label className="block mb-2 text-slate-600 font-semibold">Animation Speed</label>
+                <input type="range" min="100" max="2000" value={animationSpeed} onChange={(e)=>setAnimationSpeed(Number(e.target.value))} className="w-full accent-indigo-500" />
+                <div className="flex justify-between text-xs text-slate-500"><span>Slower</span><span>Faster</span></div>
               </div>
             </div>
-
-            {/* Legend */}
-            <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '20px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-            }}>
-              <h3 style={{ margin: '0 0 20px 0', color: '#2D3748' }}>Legend</h3>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    background: '#FFD700'
-                  }} />
-                  <span style={{ fontSize: '14px', color: '#4A5568' }}>Current Point</span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    background: '#4ECDC4',
-                    border: '2px solid #000'
-                  }} />
-                  <span style={{ fontSize: '14px', color: '#4A5568' }}>Core Point</span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    background: '#4ECDC4'
-                  }} />
-                  <span style={{ fontSize: '14px', color: '#4A5568' }}>Border Point</span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    background: '#808080'
-                  }} />
-                  <span style={{ fontSize: '14px', color: '#4A5568' }}>Noise Point</span>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    background: '#E0E0E0'
-                  }} />
-                  <span style={{ fontSize: '14px', color: '#4A5568' }}>Unprocessed</span>
-                </div>
+            <div className="bg-white rounded-2xl p-5 shadow-2xl">
+              <h3 className="text-slate-800 font-bold mb-5">Legend</h3>
+              <div className="flex flex-col gap-3">
+                <div className="flex items-center gap-3"><div className="w-5 h-5 rounded-full bg-yellow-400" /><span className="text-sm text-slate-600">Current Point</span></div>
+                <div className="flex items-center gap-3"><div className="w-5 h-5 rounded-full bg-teal-400 border-2 border-black" /><span className="text-sm text-slate-600">Core Point</span></div>
+                <div className="flex items-center gap-3"><div className="w-5 h-5 rounded-full bg-teal-400" /><span className="text-sm text-slate-600">Border Point</span></div>
+                <div className="flex items-center gap-3"><div className="w-5 h-5 rounded-full bg-gray-500" /><span className="text-sm text-slate-600">Noise Point</span></div>
+                <div className="flex items-center gap-3"><div className="w-5 h-5 rounded-full bg-gray-300" /><span className="text-sm text-slate-600">Unprocessed</span></div>
               </div>
             </div>
-
-            {/* Statistics */}
-            <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '20px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.2)'
-            }}>
-              <h3 style={{ margin: '0 0 20px 0', color: '#2D3748' }}>Statistics</h3>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{
-                  padding: '12px',
-                  background: '#EBF4FF',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  justifyContent: 'space-between'
-                }}>
-                  <span style={{ color: '#2C5282', fontWeight: '600' }}>Total Points:</span>
-                  <span style={{ color: '#2C5282', fontWeight: '700' }}>{points.length}</span>
-                </div>
-
-                <div style={{
-                  padding: '12px',
-                  background: '#C6F6D5',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  justifyContent: 'space-between'
-                }}>
-                  <span style={{ color: '#22543D', fontWeight: '600' }}>Clusters Found:</span>
-                  <span style={{ color: '#22543D', fontWeight: '700' }}>{stats.clusters}</span>
-                </div>
-
-                <div style={{
-                  padding: '12px',
-                  background: '#FED7D7',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  justifyContent: 'space-between'
-                }}>
-                  <span style={{ color: '#742A2A', fontWeight: '600' }}>Noise Points:</span>
-                  <span style={{ color: '#742A2A', fontWeight: '700' }}>{stats.noise}</span>
-                </div>
-
-                <div style={{
-                  padding: '12px',
-                  background: '#FAF089',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  justifyContent: 'space-between'
-                }}>
-                  <span style={{ color: '#744210', fontWeight: '600' }}>Processed:</span>
-                  <span style={{ color: '#744210', fontWeight: '700' }}>
-                    {stats.processed} / {points.length}
-                  </span>
-                </div>
+            <div className="bg-white rounded-2xl p-5 shadow-2xl">
+              <h3 className="text-slate-800 font-bold mb-5">Statistics</h3>
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between p-3 rounded-lg bg-indigo-50"><span className="text-indigo-900 font-semibold">Total Points:</span><span className="font-bold text-indigo-900">{points.length}</span></div>
+                <div className="flex justify-between p-3 rounded-lg bg-green-100"><span className="text-green-900 font-semibold">Clusters Found:</span><span className="font-bold text-green-900">{stats.clusters}</span></div>
+                <div className="flex justify-between p-3 rounded-lg bg-red-100"><span className="text-red-900 font-semibold">Noise Points:</span><span className="font-bold text-red-900">{stats.noise}</span></div>
+                <div className="flex justify-between p-3 rounded-lg bg-yellow-100"><span className="text-yellow-900 font-semibold">Processed:</span><span className="font-bold text-yellow-900">{stats.processed} / {points.length}</span></div>
               </div>
             </div>
           </div>

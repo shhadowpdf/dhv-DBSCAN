@@ -79,111 +79,41 @@ export default function InteractiveTutorialPage({
   const current = currentSteps[tutorialStep];
 
   return (
-    <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-      <h2
-        style={{
-          fontSize: 32,
-          color: "#1e293b",
-          marginBottom: 40,
-          textAlign: "center",
-        }}
-      >
-        Interactive Tutorial: How It Works
-      </h2>
+    <div className="max-w-[1100px] mx-auto">
+      <h2 className="text-4xl text-slate-800 mb-10 text-center font-black tracking-tight">Interactive Tutorial: How It Works</h2>
 
-      <div style={{ marginBottom: 40 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: 12,
-          }}
-        >
+      <div className="mb-10">
+        <div className="flex justify-between mb-3">
           {currentSteps.map((step, idx) => (
             <div
               key={idx}
-              style={{
-                flex: 1,
-                height: 8,
-                background: idx <= tutorialStep ? "#667eea" : "#e2e8f0",
-                marginRight: idx < currentSteps.length - 1 ? 8 : 0,
-                borderRadius: 4,
-                transition: "all 0.3s",
-              }}
+              className={`flex-1 h-2 rounded ${idx <= tutorialStep ? 'bg-indigo-500' : 'bg-slate-200'} ${idx < currentSteps.length - 1 ? 'mr-2' : ''}`}
             />
           ))}
         </div>
-        <div style={{ fontSize: 14, color: "#64748b", textAlign: "center" }}>
+        <div className="text-xs text-slate-500 text-center">
           Step {tutorialStep + 1} of {currentSteps.length}
         </div>
       </div>
 
-      <div
-        style={{
-          background: "white",
-          border: "2px solid #e0e7ff",
-          borderRadius: 16,
-          padding: 40,
-          marginBottom: 30,
-        }}
-      >
-        <h3 style={{ fontSize: 28, color: "#667eea", marginBottom: 16 }}>
-          {current.title}
-        </h3>
-        <p
-          style={{
-            fontSize: 18,
-            color: "#475569",
-            lineHeight: 1.6,
-            marginBottom: 30,
-          }}
-        >
-          {current.desc}
-        </p>
-
+      <div className="bg-white border-2 border-indigo-100 rounded-2xl p-10 mb-8">
+        <h3 className="text-2xl font-bold text-indigo-500 mb-4">{current.title}</h3>
+        <p className="text-lg text-slate-600 leading-relaxed mb-8">{current.desc}</p>
         <TutorialVisual step={tutorialStep} profession={profession} />
       </div>
 
-      <div
-        style={{ display: "flex", justifyContent: "space-between", gap: 20 }}
-      >
+      <div className="flex justify-between gap-5">
         <button
           onClick={() => setTutorialStep(Math.max(0, tutorialStep - 1))}
           disabled={tutorialStep === 0}
-          style={{
-            padding: "12px 24px",
-            border: "2px solid #e2e8f0",
-            background: "white",
-            borderRadius: 8,
-            cursor: tutorialStep === 0 ? "not-allowed" : "pointer",
-            fontWeight: 600,
-            color: tutorialStep === 0 ? "#94a3b8" : "#1e293b",
-            opacity: tutorialStep === 0 ? 0.5 : 1,
-          }}
+          className={`px-6 py-3 rounded-lg font-semibold border-2 ${tutorialStep===0?'border-slate-200 text-slate-400 cursor-not-allowed opacity-50':'cursor-pointer border-slate-300 text-slate-800 bg-white hover:border-indigo-400 transition'}`}
         >
           ← Previous Step
         </button>
         <button
-          onClick={() =>
-            setTutorialStep(Math.min(currentSteps.length - 1, tutorialStep + 1))
-          }
+          onClick={() => setTutorialStep(Math.min(currentSteps.length - 1, tutorialStep + 1))}
           disabled={tutorialStep === currentSteps.length - 1}
-          style={{
-            padding: "12px 24px",
-            border: "none",
-            background:
-              tutorialStep === currentSteps.length - 1
-                ? "#e2e8f0"
-                : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            borderRadius: 8,
-            cursor:
-              tutorialStep === currentSteps.length - 1
-                ? "not-allowed"
-                : "pointer",
-            fontWeight: 600,
-            color: "white",
-            opacity: tutorialStep === currentSteps.length - 1 ? 0.5 : 1,
-          }}
+          className={`px-6 py-3 rounded-lg font-semibold text-white ${tutorialStep===currentSteps.length-1?'bg-slate-300 cursor-not-allowed opacity-50 ':'cursor-pointer bg-gradient-to-br from-indigo-500 to-purple-600 hover:shadow-xl hover:-translate-y-0.5 transition'}`}
         >
           Next Step →
         </button>

@@ -15,72 +15,32 @@ export default function WelcomePage({ profession, setProfession, setCurrentPage 
   ];
 
   return (
-    <div style={{ textAlign: "center", maxWidth: 900, margin: "0 auto" }}>
-      <h1 style={{ fontSize: 50, color: "#1e293b", marginBottom: 16 }}>DBSCAN Visualization</h1>
-      <h2 style={{ fontSize: 36, color: "#1e293b", marginBottom: 16 }}>
-        Welcome! Let's speak your language.
-      </h2>
-      <p
-        style={{
-          fontSize: 18,
-          color: "#475569",
-          marginBottom: 40,
-          lineHeight: 1.6,
-        }}
-      >
+    <div className="text-center max-w-[900px] mx-auto">
+      <h1 className="text-[50px] text-slate-800 mb-4 font-black tracking-tight font-bold">DBSCAN Visualization</h1>
+      <h2 className="text-[36px] text-slate-800 mb-4 font-black">Welcome! Let's speak your language.</h2>
+      <p className="text-lg text-slate-600 mb-10 leading-relaxed">
         You work with data every day—properties, cases, articles. What if you
         could automatically find patterns, group similar items, and spot the
         outliers? That's what clustering does, and we'll show you how
-        <strong style={{ color: "#667eea" }}>
-          {" "}
-          without any technical jargon
-        </strong>
-        .
+        <strong className="text-indigo-500"> without any technical jargon</strong>.
       </p>
 
-      <div style={{ marginBottom: 40 }}>
-        <h3 style={{ fontSize: 24, color: "#1e293b", marginBottom: 24 }}>
-          Choose your profession:
-        </h3>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: 20,
-          }}
-        >
+      <div className="mb-10">
+        <h3 className="text-2xl text-slate-800 mb-6 font-bold">Choose your profession:</h3>
+        <div className="grid gap-5 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
           {professions.map((p) => (
             <button
               key={p.name}
               onClick={() => setProfession(p.name)}
-              style={{
-                padding: 30,
-                border:
-                  profession === p.name
-                    ? "3px solid #667eea"
-                    : "2px solid #e2e8f0",
-                background: profession === p.name ? "#f0f4ff" : "white",
-                borderRadius: 16,
-                cursor: "pointer",
-                transition: "all 0.3s",
-                boxShadow:
-                  profession === p.name
-                    ? "0 8px 20px rgba(102,126,234,0.2)"
-                    : "0 2px 8px rgba(0,0,0,0.05)",
-              }}
+              className={`p-8 rounded-2xl transition-all cursor-pointer shadow-sm text-left flex flex-col items-start ${
+                profession === p.name
+                  ? 'border-4 border-indigo-500 bg-indigo-50 shadow-xl'
+                  : 'border-4 border-slate-200 bg-white hover:border-indigo-300'
+              }`}
             >
-              <div style={{ fontSize: 48, marginBottom: 12 }}>{p.icon}</div>
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: "#1e293b",
-                  marginBottom: 8,
-                }}
-              >
-                {p.name}
-              </div>
-              <div style={{ fontSize: 14, color: "#64748b" }}>{p.desc}</div>
+              <div className="text-[48px] mb-3">{p.icon}</div>
+              <div className="text-xl font-bold text-slate-800 mb-2">{p.name}</div>
+              <div className="text-sm text-slate-500">{p.desc}</div>
             </button>
           ))}
         </div>
@@ -88,20 +48,7 @@ export default function WelcomePage({ profession, setProfession, setCurrentPage 
 
       <button
         onClick={() => setCurrentPage(1)}
-        style={{
-          padding: "16px 40px",
-          border: "none",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-          color: "white",
-          borderRadius: 12,
-          cursor: "pointer",
-          fontSize: 18,
-          fontWeight: 700,
-          boxShadow: "0 8px 20px rgba(102,126,234,0.3)",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 10,
-        }}
+        className="px-10 py-4 rounded-xl text-white font-bold text-lg inline-flex items-center gap-2 shadow-xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:shadow-2xl hover:-translate-y-1 transition"
       >
         Get Started
         <ChevronRight size={20} />

@@ -121,106 +121,38 @@ export default function LearnLanguagePage({ profession }) {
   const current = translations[profession];
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto" }}>
-      <h2
-        style={{
-          fontSize: 32,
-          color: "#1e293b",
-          marginBottom: 16,
-          textAlign: "center",
-        }}
-      >
-        Your Language ↔ Tech Language
-      </h2>
-      <p
-        style={{
-          fontSize: 16,
-          color: "#475569",
-          marginBottom: 40,
-          textAlign: "center",
-          lineHeight: 1.6,
-        }}
-      >
-        Here's how the words you use every day connect to data clustering
-        concepts.
+    <div className="max-w-[1000px] mx-auto">
+      <h2 className="text-4xl text-slate-800 mb-4 text-center font-black tracking-tight">Your Language ↔ Tech Language</h2>
+      <p className="text-base text-slate-600 mb-10 text-center leading-relaxed">
+        Here's how the words you use every day connect to data clustering concepts.
         <strong> No formulas, just plain translations</strong>.
       </p>
 
-      <div style={{ display: "grid", gap: 20 }}>
+      <div className="grid gap-5">
         {current.map((item, idx) => (
           <div
             key={idx}
-            style={{
-              background: "linear-gradient(135deg, #f8faff 0%, #ffffff 100%)",
-              border: "2px solid #e0e7ff",
-              borderRadius: 16,
-              padding: 24,
-              display: "grid",
-              gridTemplateColumns: "1fr auto 1fr",
-              gap: 20,
-              alignItems: "center",
-              boxShadow: "0 4px 12px rgba(102,126,234,0.08)",
-              transition: "all 0.3s",
-            }}
+            className="bg-gradient-to-br from-slate-50 to-white border-2 border-indigo-100 rounded-2xl p-6 grid grid-cols-[1fr_auto_1fr] gap-5 items-center shadow-md hover:shadow-xl transition"
           >
             <div>
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: "#667eea",
-                  marginBottom: 4,
-                }}
-              >
-                {item.your}
-              </div>
-              <div style={{ fontSize: 13, color: "#64748b" }}>What you say</div>
+              <div className="text-[20px] font-bold text-indigo-500 mb-1">{item.your}</div>
+              <div className="text-[13px] text-slate-500">What you say</div>
             </div>
-            <div style={{ fontSize: 24, color: "#94a3b8" }}>⟷</div>
+            <div className="text-2xl text-slate-400">⟷</div>
             <div>
-              <div
-                style={{
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: "#764ba2",
-                  marginBottom: 4,
-                }}
-              >
-                {item.tech}
-              </div>
-              <div style={{ fontSize: 13, color: "#64748b" }}>Tech term</div>
+              <div className="text-[20px] font-bold text-purple-600 mb-1">{item.tech}</div>
+              <div className="text-[13px] text-slate-500">Tech term</div>
             </div>
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                marginTop: 8,
-                padding: 16,
-                background: "white",
-                borderRadius: 8,
-                fontSize: 14,
-                color: "#475569",
-                lineHeight: 1.5,
-              }}
-            >
+            <div className="col-span-full mt-2 p-4 bg-white rounded-lg text-sm text-slate-600 leading-relaxed">
               💡 {item.explanation}
             </div>
           </div>
         ))}
       </div>
 
-      <div
-        style={{
-          marginTop: 40,
-          padding: 24,
-          background: "#fef3c7",
-          borderRadius: 16,
-          border: "2px solid #fbbf24",
-        }}
-      >
-        <h3 style={{ margin: "0 0 12px 0", color: "#92400e", fontSize: 18 }}>
-          ✨ The Big Picture
-        </h3>
-        <p style={{ margin: 0, color: "#78350f", lineHeight: 1.6 }}>
+      <div className="mt-10 p-6 bg-amber-100 border-2 border-amber-400 rounded-2xl">
+        <h3 className="m-0 mb-3 text-amber-800 text-lg font-bold">✨ The Big Picture</h3>
+        <p className="m-0 text-amber-900 leading-relaxed text-sm">
           {profession === "Real Estate" &&
             "Clustering helps you automatically group properties into market segments, find comparable sales, and identify unique investment opportunities—all based on the features you already track."}
           {profession === "Law" &&

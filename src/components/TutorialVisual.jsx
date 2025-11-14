@@ -482,29 +482,16 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
   }, [step, profession, baseData, colors, epsCoord, minPts]);
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <div className="flex flex-col items-center">
       <svg
         ref={svgRef}
         width={900}
         height={440}
-        style={{
-          borderRadius: 14,
-          boxShadow: "0 6px 20px rgba(2,6,23,0.08)",
-          background: "transparent",
-        }}
+        className="rounded-xl shadow-lg bg-transparent"
       />
       {3 <= step && step !== 4 && (
-        <div
-          style={{
-            marginTop: 20,
-            display: "flex",
-            gap: "24px",
-            alignItems: "center",
-          }}
-        >
-          <label style={{ fontSize: 13, color: "#334155" }}>
+        <div className="mt-5 flex gap-6 items-center">
+          <label className="text-[13px] text-slate-700 flex items-center gap-3">
             ε (epsilon): {epsCoord}
             <input
               type="range"
@@ -513,11 +500,10 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
               value={epsCoord}
               step="1"
               onChange={(e) => setepsCoord(+e.target.value)}
-              style={{ marginLeft: 10 }}
+              className="accent-indigo-500 cursor-pointer"
             />
           </label>
-
-          <label style={{ fontSize: 13, color: "#334155" }}>
+          <label className="text-[13px] text-slate-700 flex items-center gap-3">
             minPts: {minPts}
             <input
               type="range"
@@ -526,7 +512,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
               value={minPts}
               step="1"
               onChange={(e) => setminPts(+e.target.value)}
-              style={{ marginLeft: 10 }}
+              className="accent-indigo-500 cursor-pointer"
             />
           </label>
         </div>

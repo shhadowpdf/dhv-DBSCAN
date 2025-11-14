@@ -164,421 +164,71 @@ export default function InsightsPage({ profession }) {
 
   const current = insights[profession];
 
-  useEffect(() => {
-    const cards = document.querySelectorAll(".insight-card");
-    cards.forEach((c, i) => {
-      c.style.transition = "all 600ms cubic-bezier(0.16, 1, 0.3, 1)";
-      c.style.transitionDelay = `${i * 100}ms`;
-      setTimeout(() => c.classList.add("visible"), 50);
-    });
-  }, [profession]);
-
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 20px" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-        * { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        
-        .insights-hero {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 24px;
-          padding: 48px;
-          margin-bottom: 48px;
-          color: white;
-          box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
-          position: relative;
-          overflow: hidden;
-        }
-        
-        .insights-hero::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-          opacity: 0.3;
-        }
-        
-        .hero-content { position: relative; z-index: 1; }
-        
-        .hero-icon {
-          font-size: 72px;
-          margin-bottom: 16px;
-          display: inline-block;
-          animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        
-        .hero-title {
-          font-size: 42px;
-          font-weight: 900;
-          margin: 0 0 12px 0;
-          letter-spacing: -0.5px;
-        }
-        
-        .hero-tagline {
-          font-size: 20px;
-          font-weight: 600;
-          margin-bottom: 24px;
-          opacity: 0.95;
-        }
-        
-        .hero-context {
-          font-size: 16px;
-          line-height: 1.7;
-          opacity: 0.9;
-          max-width: 900px;
-        }
-        
-        .stats-row {
-          display: flex;
-          gap: 32px;
-          margin-top: 32px;
-          padding-top: 32px;
-          border-top: 1px solid rgba(255,255,255,0.2);
-        }
-        
-        .stat-item {
-          text-align: center;
-        }
-        
-        .stat-value {
-          font-size: 36px;
-          font-weight: 900;
-          display: block;
-          margin-bottom: 4px;
-        }
-        
-        .stat-label {
-          font-size: 13px;
-          opacity: 0.85;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-        }
-        
-        .case-list {
-          display: grid;
-          gap: 32px;
-          margin-bottom: 48px;
-        }
-        
-        .insight-card {
-          background: white;
-          border-radius: 20px;
-          padding: 36px;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-          transform: translateY(20px) scale(0.98);
-          opacity: 0;
-          transition: all 0.3s ease;
-          border: 2px solid transparent;
-        }
-        
-        .insight-card.visible {
-          transform: translateY(0) scale(1);
-          opacity: 1;
-        }
-        
-        .insight-card:hover {
-          transform: translateY(-8px) scale(1.01);
-          box-shadow: 0 20px 50px rgba(102, 126, 234, 0.15);
-          border-color: #667eea;
-        }
-        
-        .case-header {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-        
-        .case-emoji {
-          width: 64px;
-          height: 64px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 32px;
-          flex-shrink: 0;
-        }
-        
-        .case-title {
-          font-size: 26px;
-          font-weight: 900;
-          color: #1e293b;
-          line-height: 1.2;
-        }
-        
-        .case-section {
-          margin-bottom: 20px;
-          padding: 20px;
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-          border-radius: 12px;
-          border-left: 4px solid #667eea;
-        }
-        
-        .section-label {
-          font-size: 12px;
-          font-weight: 800;
-          text-transform: uppercase;
-          color: #667eea;
-          letter-spacing: 1px;
-          margin-bottom: 8px;
-        }
-        
-        .section-text {
-          font-size: 15px;
-          line-height: 1.7;
-          color: #475569;
-        }
-        
-        .result-section {
-          background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-          border-left-color: #10b981;
-        }
-        
-        .metrics-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 16px;
-          margin-top: 24px;
-        }
-        
-        .metric-card {
-          background: white;
-          padding: 20px;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-          text-align: center;
-          border: 2px solid #e0e7ff;
-        }
-        
-        .metric-label {
-          font-size: 12px;
-          font-weight: 700;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          margin-bottom: 8px;
-        }
-        
-        .metric-value {
-          font-size: 20px;
-          font-weight: 700;
-          color: #667eea;
-          font-family: 'Roboto', monospace;
-        }
-        
-        .testimonial {
-          margin-top: 24px;
-          padding: 20px;
-          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-          border-radius: 12px;
-          border-left: 4px solid #f59e0b;
-          font-style: italic;
-          color: #92400e;
-          font-size: 15px;
-          line-height: 1.6;
-        }
-        
-        .testimonial::before {
-          content: '"';
-          font-size: 48px;
-          color: #f59e0b;
-          opacity: 0.3;
-          line-height: 0;
-          margin-right: 8px;
-        }
-        
-        .tips-section {
-          background: white;
-          border-radius: 20px;
-          padding: 36px;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        }
-        
-        .tips-header {
-          font-size: 28px;
-          font-weight: 900;
-          color: #1e293b;
-          margin-bottom: 24px;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        
-        .tip-item {
-          display: flex;
-          gap: 20px;
-          margin-bottom: 24px;
-          padding: 20px;
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-          border-radius: 12px;
-          transition: all 0.3s ease;
-        }
-        
-        .tip-item:hover {
-          transform: translateX(8px);
-          background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-        }
-        
-        .tip-icon {
-          width: 48px;
-          height: 48px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          flex-shrink: 0;
-        }
-        
-        .tip-content {
-          flex: 1;
-        }
-        
-        .tip-title {
-          font-size: 16px;
-          font-weight: 800;
-          color: #1e293b;
-          margin-bottom: 6px;
-        }
-        
-        .tip-text {
-          font-size: 14px;
-          color: #475569;
-          line-height: 1.6;
-        }
-        
-        .cta-section {
-          margin-top: 48px;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 20px;
-          padding: 48px;
-          text-align: center;
-          color: white;
-        }
-        
-        .cta-title {
-          font-size: 32px;
-          font-weight: 900;
-          margin-bottom: 16px;
-        }
-        
-        .cta-text {
-          font-size: 18px;
-          margin-bottom: 32px;
-          opacity: 0.95;
-        }
-        
-        .cta-buttons {
-          display: flex;
-          gap: 16px;
-          justify-content: center;
-          flex-wrap: wrap;
-        }
-        
-        .btn {
-          padding: 16px 32px;
-          border-radius: 12px;
-          font-weight: 800;
-          font-size: 16px;
-          cursor: pointer;
-          border: none;
-          transition: all 0.3s ease;
-        }
-        
-        .btn-primary {
-          background: white;
-          color: #667eea;
-        }
-        
-        .btn-primary:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 12px 24px rgba(255, 255, 255, 0.3);
-        }
-        
-        .btn-secondary {
-          background: rgba(255, 255, 255, 0.15);
-          color: white;
-          border: 2px solid white;
-        }
-        
-        .btn-secondary:hover {
-          background: rgba(255, 255, 255, 0.25);
-          transform: translateY(-4px);
-        }
-      `}</style>
-
-      <div className="insights-hero">
-        <div className="hero-content">
-          <div className="hero-icon">{current.icon}</div>
-          <h1 className="hero-title">{profession}</h1>
-          <div className="hero-tagline">{current.tagline}</div>
-          <p className="hero-context">{current.context}</p>
+    <div className="max-w-[1200px] mx-auto px-5 py-10">
+      <div className="bg-gradient-to-br from-indigo-500 to-purple-700 rounded-3xl p-12 mb-12 text-white shadow-2xl relative overflow-hidden font-normal">
+        <div className="relative z-10">
+          <div className="text-6xl mb-4 inline-block animate-bounce">{current.icon}</div>
+          <h1 className="text-5xl font-black mb-3 tracking-tight">{profession}</h1>
+          <div className="text-xl font-semibold mb-6 opacity-95">{current.tagline}</div>
+          <p className="max-w-3xl leading-relaxed opacity-90 text-base">{current.context}</p>
         </div>
       </div>
 
-      <div className="case-list">
+      <div className="grid gap-8 mb-12">
         {current.cases.map((caseStudy, idx) => (
-          <div key={idx} className="insight-card">
-            <div className="case-header">
-              <div className="case-emoji">{caseStudy.emoji}</div>
-              <h2 className="case-title">{caseStudy.title}</h2>
+          <div key={idx} className="bg-white rounded-2xl p-9 shadow-lg border-2 border-transparent hover:border-indigo-500 transition-all hover:-translate-y-2 hover:shadow-2xl">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-700 flex items-center justify-center text-3xl">
+                {caseStudy.emoji}
+              </div>
+              <h2 className="text-2xl font-black text-slate-800 leading-tight">{caseStudy.title}</h2>
             </div>
 
-            <div className="case-section">
-              <div className="section-label">❌ The Problem</div>
-              <div className="section-text">{caseStudy.problem}</div>
+            <div className="mb-5 p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border-l-4 border-indigo-500">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-500 mb-2">❌ The Problem</div>
+              <div className="text-sm leading-relaxed text-slate-600">{caseStudy.problem}</div>
             </div>
 
-            <div className="case-section">
-              <div className="section-label">💡 The Solution</div>
-              <div className="section-text">{caseStudy.solution}</div>
+            <div className="mb-5 p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 border-l-4 border-indigo-500">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-500 mb-2">💡 The Solution</div>
+              <div className="text-sm leading-relaxed text-slate-600">{caseStudy.solution}</div>
             </div>
 
-            <div className="case-section result-section">
-              <div className="section-label">✅ The Result</div>
-              <div className="section-text">{caseStudy.result}</div>
+            <div className="mb-5 p-5 rounded-xl bg-gradient-to-br from-green-50 to-green-100 border-l-4 border-emerald-500">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 mb-2">✅ The Result</div>
+              <div className="text-sm leading-relaxed text-slate-600">{caseStudy.result}</div>
             </div>
 
-            <div className="metrics-grid">
+            <div className="grid gap-4 mt-6 sm:grid-cols-2 md:grid-cols-3">
               {Object.entries(caseStudy.metrics).map(([key, value], i) => (
-                <div key={i} className="metric-card">
-                  <div className="metric-label">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
-                  <div className="metric-value">{value}</div>
+                <div key={i} className="bg-white p-4 rounded-xl text-center shadow-sm border-2 border-indigo-100">
+                  <div className="text-[11px] font-bold uppercase tracking-wide text-slate-500 mb-2">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                  <div className="text-lg font-bold text-indigo-500 font-[Roboto]">{value}</div>
                 </div>
               ))}
             </div>
 
-            <div className="testimonial">
-              {caseStudy.testimonial}
+            <div className="mt-6 p-5 rounded-xl bg-gradient-to-br from-amber-100 to-amber-200 border-l-4 border-amber-500 italic text-amber-800 text-sm leading-relaxed">
+              “{caseStudy.testimonial}”
             </div>
           </div>
         ))}
       </div>
 
-      <div className="tips-section">
-        <div className="tips-header">
+      <div className="bg-white rounded-2xl p-9 shadow-lg">
+        <div className="text-3xl font-black text-slate-800 mb-6 flex items-center gap-3">
           <span>💡</span>
           <span>Pro Tips from Experts</span>
         </div>
-        
         {current.tips.map((tip, idx) => (
-          <div key={idx} className="tip-item">
-            <div className="tip-icon">{tip.icon}</div>
-            <div className="tip-content">
-              <div className="tip-title">{tip.title}</div>
-              <div className="tip-text">{tip.text}</div>
+          <div key={idx} className="flex gap-5 mb-6 p-5 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 hover:from-indigo-50 hover:to-indigo-100 transition-all">
+            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-700 flex items-center justify-center text-2xl">
+              {tip.icon}
+            </div>
+            <div className="flex-1">
+              <div className="text-base font-extrabold text-slate-800 mb-1">{tip.title}</div>
+              <div className="text-sm leading-relaxed text-slate-600">{tip.text}</div>
             </div>
           </div>
         ))}

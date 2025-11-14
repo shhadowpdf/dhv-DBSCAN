@@ -29,79 +29,23 @@ export default function DBSCANProfessionalDashboard() {
   ];
 
   return (
-    <div
-      style={{
-        fontFamily: "Inter, -apple-system, sans-serif",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        minHeight: "100vh",
-        padding: "20px",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1400,
-          margin: "0 auto",
-          background: "white",
-          borderRadius: 20,
-          boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-          overflow: "hidden",
-        }}
-      >
-        <header
-          style={{
-            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            padding: "30px 40px",
-            color: "white",
-          }}
-        >
-          <h1
-            style={{
-              margin: 0,
-              fontSize: 32,
-              fontWeight: 900,
-              letterSpacing: "-0.5px",
-            }}
-          >
+    <div className="min-h-screen p-5 bg-gradient-to-br from-indigo-500 to-purple-700">
+      <div className="max-w-[1400px] mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <header className="bg-gradient-to-br from-indigo-500 to-purple-700 px-10 py-8 text-white">
+          <h1 className="text-4xl font-black tracking-tight">
             Pattern Discovery for Professionals
           </h1>
-          <p style={{ margin: "8px 0 0 0", fontSize: 16, opacity: 0.9 }}>
-            Understanding data clustering through your professional lens
-          </p>
+          <p className="mt-2 text-base opacity-90">Understanding data clustering through your professional lens</p>
         </header>
 
-        <nav
-          style={{
-            display: "flex",
-            borderBottom: "2px solid #e2e8f0",
-            background: "#f8fafc",
-            overflowX: "auto",
-          }}
-        >
+        <nav className="flex border-b-2 border-slate-200 bg-slate-50 overflow-x-auto">
           {pages.map((page, idx) => {
             const Icon = page.icon;
             return (
               <button
                 key={page.id}
                 onClick={() => setCurrentPage(idx)}
-                style={{
-                  flex: "1 1 auto",
-                  padding: "16px 20px",
-                  border: "none",
-                  background: currentPage === idx ? "white" : "transparent",
-                  borderBottom:
-                    currentPage === idx
-                      ? "3px solid #667eea"
-                      : "3px solid transparent",
-                  color: currentPage === idx ? "#667eea" : "#64748b",
-                  cursor: "pointer",
-                  fontWeight: currentPage === idx ? 700 : 500,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  fontSize: 14,
-                  transition: "all 0.2s",
-                }}
+                className={` cursor-pointer flex-1 py-4 px-5 flex items-center justify-center gap-2 text-sm transition-all ${currentPage===idx?"bg-white text-indigo-500 font-bold border-b-[3px] border-indigo-500":"bg-transparent text-slate-500 font-medium border-b-[3px] border-transparent"}` }
               >
                 <Icon size={18} />
                 {page.title}
@@ -110,7 +54,7 @@ export default function DBSCANProfessionalDashboard() {
           })}
         </nav>
 
-        <main style={{ padding: 40, minHeight: 500 }}>
+        <main className="p-10 min-h-[500px]">
           {currentPage === 0 && (
             <WelcomePage
               profession={profession}
@@ -139,30 +83,11 @@ export default function DBSCANProfessionalDashboard() {
           {currentPage === 5 && <InsightsPage profession={profession} />}
         </main>
 
-        <footer
-          style={{
-            padding: "20px 40px",
-            background: "#f8fafc",
-            borderTop: "1px solid #e2e8f0",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
+        <footer className="px-10 py-5 bg-slate-50 border-t border-slate-200 flex justify-between">
           <button
             onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
             disabled={currentPage === 0}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              background: currentPage === 0 ? "#e2e8f0" : "#667eea",
-              color: currentPage === 0 ? "#94a3b8" : "white",
-              borderRadius: 8,
-              cursor: currentPage === 0 ? "not-allowed" : "pointer",
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
+            className={`px-5 py-2 rounded-lg font-semibold flex items-center gap-2 ${currentPage===0?"bg-slate-200 text-slate-400 cursor-not-allowed":"bg-indigo-500 text-white cursor-pointer"}`}
           >
             <ChevronLeft size={18} />
             Previous
@@ -172,20 +97,7 @@ export default function DBSCANProfessionalDashboard() {
               setCurrentPage(Math.min(pages.length - 1, currentPage + 1))
             }
             disabled={currentPage === pages.length - 1}
-            style={{
-              padding: "10px 20px",
-              border: "none",
-              background:
-                currentPage === pages.length - 1 ? "#e2e8f0" : "#667eea",
-              color: currentPage === pages.length - 1 ? "#94a3b8" : "white",
-              borderRadius: 8,
-              cursor:
-                currentPage === pages.length - 1 ? "not-allowed" : "pointer",
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-            }}
+            className={`px-5 py-2 rounded-lg font-semibold flex items-center gap-2 ${currentPage===pages.length-1?"bg-slate-200 text-slate-400 cursor-not-allowed":"bg-indigo-500 text-white cursor-pointer"}` }
           >
             Next
             <ChevronRight size={18} />
