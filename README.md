@@ -361,7 +361,7 @@ Code quality is maintained through ESLint with:
 
 - **[Devam Sharma](https://github.com/Devamsharma33)**
 
-- **Hemant Kumar**
+- **[Hemant Kumar](https://github.com/hemantkr1082005-rgb)**
 
 - **[Saksham Kushwah](https://github.com/shhadowpdf)**
 
