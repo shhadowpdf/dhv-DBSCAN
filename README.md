@@ -353,37 +353,18 @@ Code quality is maintained through ESLint with:
 
 ---
 
-## 🤝 Contributing
+## 👥 Team
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Project Contributors
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+- **[Aalekh Raghuvanshi](https://github.com/Aalekh-Raghuvanshi)**
 
----
+- **[Devam Sharma](https://github.com/Devamsharma33)**
 
-## 📝 License
+- **Hemant Kumar**
 
-This project is open source and available for educational purposes.
+- **[Saksham Kushwah](https://github.com/shhadowpdf)**
 
----
 
-## 🙏 Acknowledgments
 
-- D3.js community for amazing visualization library
-- React team for the robust framework
-- Tailwind CSS for the utility-first approach
-- All contributors who helped improve this educational tool
 
----
-
-## 📧 Contact
-
-For questions, suggestions, or feedback, please open an issue on GitHub.
-
----
-
-**Made with ❤️ for learners who want to understand data clustering without the complexity**
