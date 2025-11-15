@@ -45,7 +45,7 @@ export default function DBSCANProfessionalDashboard() {
               <button
                 key={page.id}
                 onClick={() => setCurrentPage(idx)}
-                className={` cursor-pointer flex-1 py-4 px-5 flex items-center justify-center gap-2 text-sm transition-all ${currentPage===idx?"bg-white text-indigo-500 font-bold border-b-[3px] border-indigo-500":"bg-transparent text-slate-500 font-medium border-b-[3px] border-transparent"}` }
+                className={` cursor-pointer flex-1 py-4 px-5 flex items-center justify-center gap-2 text-sm transition-all ${currentPage===idx?"bg-white text-indigo-500 font-medium border-b-[3px] border-indigo-500":"bg-transparent text-slate-500 font-medium border-b-[3px] border-transparent"}` }
               >
                 <Icon size={18} />
                 {page.title}
@@ -85,7 +85,7 @@ export default function DBSCANProfessionalDashboard() {
 
         <footer className="px-10 py-5 bg-slate-50 border-t border-slate-200 flex justify-between">
           <button
-            onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
+            onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setCurrentPage(Math.max(0, currentPage - 1)); }}
             disabled={currentPage === 0}
             className={`px-5 py-2 rounded-lg font-semibold flex items-center gap-2 ${currentPage===0?"bg-slate-200 text-slate-400 cursor-not-allowed":"bg-indigo-500 text-white cursor-pointer"}`}
           >
@@ -93,9 +93,7 @@ export default function DBSCANProfessionalDashboard() {
             Previous
           </button>
           <button
-            onClick={() =>
-              setCurrentPage(Math.min(pages.length - 1, currentPage + 1))
-            }
+            onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setCurrentPage(Math.min(pages.length - 1, currentPage + 1)); }}
             disabled={currentPage === pages.length - 1}
             className={`px-5 py-2 rounded-lg font-semibold flex items-center gap-2 ${currentPage===pages.length-1?"bg-slate-200 text-slate-400 cursor-not-allowed":"bg-indigo-500 text-white cursor-pointer"}` }
           >

@@ -92,16 +92,16 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
   const svgRef = useRef(null);
 
   const { baseData, colors } = useMemo(() => {
-    const c1 = makeCircle(220, 160, 64, 18, "C1-");
-    const c2 = makeEllipse(560, 120, 100, 42, 20, "C2-");
-    const c3 = makeCrescent(420, 300, 48, 84, 18, "C3-");
-    const c4 = makeLine(160, 320, 320, 380, 18, 12, "C4-");
+    const c1 = makeCircle(200, 160, 64, 18, "C1-");
+    const c2 = makeEllipse(480, 120, 90, 42, 20, "C2-");
+    const c3 = makeCrescent(380, 300, 48, 84, 18, "C3-");
+    const c4 = makeLine(140, 320, 300, 380, 18, 12, "C4-");
     const data = [...c1, ...c2, ...c3, ...c4];
     for (let i = 0; i < 6; i++) {
       if (Math.random() < 0.5)
         data.push({
           id: `NOISE-${i}`,
-          x: Math.random() * 880 + 10,
+          x: Math.random() * 650 + 10,
           y: Math.random() * 420 + 10,
         });
     }
@@ -167,7 +167,7 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
       .text(yLabel);
 
     const data = baseData.map((d) => ({ ...d }));
-    if (step >= 4) data.push({ id: "OUT-1", x: 800, y: 70 });
+    if (step >= 4) data.push({ id: "OUT-1", x: 650, y: 70 });
 
     const tooltip = d3
       .select("body")
@@ -367,23 +367,107 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
             path.transition().duration(900).attr("fill-opacity", 0.12)
           );
 
-        const cx = d3.mean(pts, (p) => p.x);
-        const cy = d3.mean(pts, (p) => p.y);
-        svg
-          .append("text")
-          .attr("x", xScale(cx))
-          .attr("y", yScale(cy) - 36)
-          .attr("text-anchor", "middle")
-          .attr("font-weight", 800)
-          .attr("font-size", 14)
+      });
+
+      // Create legend
+      const legendX = W - 140;
+      const legendY = 20;
+      const legendGroup = svg.append("g").attr("class", "legend");
+
+      // Legend background
+      legendGroup
+        .append("rect")
+        .attr("x", legendX - 10)
+        .attr("y", legendY - 10)
+        .attr("width", 130)
+        .attr("height", clusterKeys.length * 28 + 50)
+        .attr("fill", "white")
+        .attr("stroke", "#e2e8f0")
+        .attr("stroke-width", 1.5)
+        .attr("rx", 8)
+        .attr("opacity", 0)
+        .transition()
+        .delay(1200)
+        .duration(600)
+        .attr("opacity", 0.95);
+
+      // Legend title
+      legendGroup
+        .append("text")
+        .attr("x", legendX)
+        .attr("y", legendY + 5)
+        .attr("font-size", 13)
+        .attr("font-weight", 700)
+        .attr("fill", "#334155")
+        .attr("opacity", 0)
+        .text("Clusters")
+        .transition()
+        .delay(1400)
+        .duration(600)
+        .attr("opacity", 1);
+
+      // Legend items for each cluster
+      clusterKeys.forEach((ck, idx) => {
+        const itemY = legendY + 30 + idx * 28;
+
+        // Color circle
+        legendGroup
+          .append("circle")
+          .attr("cx", legendX + 8)
+          .attr("cy", itemY)
+          .attr("r", 6)
           .attr("fill", colors[idx % colors.length])
+          .attr("stroke", "white")
+          .attr("stroke-width", 1.5)
+          .attr("opacity", 0)
+          .transition()
+          .delay(1400 + idx * 100)
+          .duration(600)
+          .attr("opacity", 1);
+
+        // Cluster label
+        legendGroup
+          .append("text")
+          .attr("x", legendX + 22)
+          .attr("y", itemY + 4)
+          .attr("font-size", 12)
+          .attr("fill", "#475569")
           .attr("opacity", 0)
           .text(`Cluster ${ck + 1}`)
           .transition()
-          .delay(1000)
+          .delay(1400 + idx * 100)
           .duration(600)
           .attr("opacity", 1);
       });
+
+      // Add outlier/noise legend item
+      const outlierY = legendY + 30 + clusterKeys.length * 28;
+      legendGroup
+        .append("circle")
+        .attr("cx", legendX + 8)
+        .attr("cy", outlierY)
+        .attr("r", 6)
+        .attr("fill", "#94a3b8")
+        .attr("stroke", "white")
+        .attr("stroke-width", 1.5)
+        .attr("opacity", 0)
+        .transition()
+        .delay(1400 + clusterKeys.length * 100)
+        .duration(600)
+        .attr("opacity", 1);
+
+      legendGroup
+        .append("text")
+        .attr("x", legendX + 22)
+        .attr("y", outlierY + 4)
+        .attr("font-size", 12)
+        .attr("fill", "#475569")
+        .attr("opacity", 0)
+        .text("Noise/Outlier")
+        .transition()
+        .delay(1400 + clusterKeys.length * 100)
+        .duration(600)
+        .attr("opacity", 1);
 
       svg
         .selectAll("g.pt")
@@ -399,54 +483,55 @@ export default function TutorialVisual({ step = 0, profession = "Journalism" }) 
         });
     }
 
-    if (step >= 4) {
+    if(step >= 4) {
       const noisePts = data.filter((d) => d._label === -1);
+      const highlightIdx = Math.floor(Math.random() * noisePts.length);
       
       noisePts.forEach((n, idx) => {
         const nx = xScale(n.x);
         const ny = yScale(n.y);
         
-        const pulse = svg
-          .append("circle")
-          .attr("cx", nx)
-          .attr("cy", ny)
-          .attr("r", 10)
-          .attr("fill", "none")
-          .attr("stroke", "#f97316")
-          .attr("stroke-width", 2)
-          .attr("opacity", 0);
-        
-        setTimeout(() => {
-          (function repeat() {
-            pulse
-              .attr("r", 10)
-              .attr("opacity", 0.95)
-              .transition()
-              .duration(900)
-              .attr("r", 28)
-              .attr("opacity", 0.15)
-              .transition()
-              .duration(900)
-              .attr("r", 10)
-              .attr("opacity", 0.9)
-              .on("end", repeat);
-          })();
-        }, idx * 150);
-        
-        svg
-          .append("circle")
-          .attr("cx", nx)
-          .attr("cy", ny)
-          .attr("r", 8)
-          .attr("fill", "#f97316")
-          .attr("opacity", 0)
-          .transition()
-          .delay(idx * 150)
-          .duration(700)
-          .attr("opacity", 0.9)
-          .attr("r", 11);
-        
-        if (idx === 0) {
+        if (idx === highlightIdx) {
+          const pulse = svg
+            .append("circle")
+            .attr("cx", nx)
+            .attr("cy", ny)
+            .attr("r", 10)
+            .attr("fill", "none")
+            .attr("stroke", "#f97316")
+            .attr("stroke-width", 2)
+            .attr("opacity", 0);
+          
+          setTimeout(() => {
+            (function repeat() {
+              pulse
+                .attr("r", 10)
+                .attr("opacity", 0.95)
+                .transition()
+                .duration(900)
+                .attr("r", 28)
+                .attr("opacity", 0.15)
+                .transition()
+                .duration(900)
+                .attr("r", 10)
+                .attr("opacity", 0.9)
+                .on("end", repeat);
+            })();
+          }, 150);
+          
+          svg
+            .append("circle")
+            .attr("cx", nx)
+            .attr("cy", ny)
+            .attr("r", 8)
+            .attr("fill", "#f97316")
+            .attr("opacity", 0)
+            .transition()
+            .delay(150)
+            .duration(700)
+            .attr("opacity", 0.9)
+            .attr("r", 11);
+          
           svg
             .append("text")
             .attr("x", nx + 18)

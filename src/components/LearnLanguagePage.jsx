@@ -122,7 +122,7 @@ export default function LearnLanguagePage({ profession }) {
 
   return (
     <div className="max-w-[1000px] mx-auto">
-      <h2 className="text-4xl text-slate-800 mb-4 text-center font-black tracking-tight">Your Language ↔ Tech Language</h2>
+      <h2 className="text-4xl text-slate-800 mb-4 text-center font-semibold tracking-tight">Your Language ↔ Tech Language</h2>
       <p className="text-base text-slate-600 mb-10 text-center leading-relaxed">
         Here's how the words you use every day connect to data clustering concepts.
         <strong> No formulas, just plain translations</strong>.

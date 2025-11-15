@@ -48,7 +48,7 @@ export default function WelcomePage({ profession, setProfession, setCurrentPage 
 
       <button
         onClick={() => setCurrentPage(1)}
-        className="px-10 py-4 rounded-xl text-white font-bold text-lg inline-flex items-center gap-2 shadow-xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:shadow-2xl hover:-translate-y-1 transition"
+        className="px-10 py-4 rounded-xl cursor-pointer text-white font-bold text-lg inline-flex items-center gap-2 shadow-xl bg-gradient-to-br from-indigo-500 to-purple-600 hover:shadow-2xl hover:-translate-y-1 transition"
       >
         Get Started
         <ChevronRight size={20} />

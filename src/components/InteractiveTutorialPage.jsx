@@ -80,7 +80,7 @@ export default function InteractiveTutorialPage({
 
   return (
     <div className="max-w-[1100px] mx-auto">
-      <h2 className="text-4xl text-slate-800 mb-10 text-center font-black tracking-tight">Interactive Tutorial: How It Works</h2>
+      <h2 className="text-4xl text-slate-800 mb-10 text-center font-semibold tracking-tight">Interactive Tutorial: How It Works</h2>
 
       <div className="mb-10">
         <div className="flex justify-between mb-3">

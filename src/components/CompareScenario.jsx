@@ -384,7 +384,7 @@ export default function CompareScenarios({ profession }) {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <h2 className="text-4xl text-slate-800 mb-4 text-center">
+      <h2 className="text-4xl text-slate-800 mb-4 text-center font-semibold">
         Compare Scenarios: Find Your Sweet Spot
       </h2>
       <p className="text-lg text-slate-600 mb-10 text-center leading-relaxed">
