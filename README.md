@@ -365,6 +365,8 @@ Code quality is maintained through ESLint with:
 
 - **[Saksham Kushwah](https://github.com/shhadowpdf)**
 
+- **Asmit Chakrobortty**
+
 
 
 
